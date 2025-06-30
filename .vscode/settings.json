@@ -11,6 +11,5 @@
     "autopep8.args": [
         "--max-line-length",
         "120"
-    ],
-    "python.defaultInterpreterPath": "G:\\Work\\ForkLift_Safety_System\\Software\\forklift_injury_prevention_device\\.venv\\Scripts\\python.exe"
+    ]
 }
