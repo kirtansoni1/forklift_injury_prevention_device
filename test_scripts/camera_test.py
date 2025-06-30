@@ -10,9 +10,6 @@ def main():
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
-    # Attempt to set a higher frame rate
-    cap.set(cv2.CAP_PROP_FPS, 30)
-
     # Confirm actual settings
     width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
