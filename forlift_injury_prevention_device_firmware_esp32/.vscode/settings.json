@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "fstream": "cpp",
+        "sstream": "cpp"
+    },
+    "editor.formatOnSave": true,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "autopep8.importStrategy": "useBundled",
+    "autopep8.args": [
+        "--max-line-length",
+        "120"
+    ]
+}
