@@ -1,3 +1,6 @@
+import sys
+sys.path.append('.')  # noqa
+
 from ultralytics import YOLO
 from utils.defines import NCNN_MODEL_PATH, CONFIDENCE_THRESHOLD, TARGET_CLASS
 

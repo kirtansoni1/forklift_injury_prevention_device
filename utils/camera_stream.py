@@ -1,5 +1,8 @@
 import cv2
 import threading
+import sys
+sys.path.append('.')  # noqa
+
 from utils.defines import CAMERA_INDEX, FRAME_WIDTH, FRAME_HEIGHT, TARGET_FPS
 
 

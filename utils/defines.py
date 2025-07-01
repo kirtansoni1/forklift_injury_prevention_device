@@ -14,7 +14,7 @@ IOU_THRESHOLD = 0.45
 TARGET_CLASS = 0  # 'person'
 
 # NCNN model path
-NCNN_MODEL_PATH = "models/yolov11n.ncnn"
+NCNN_MODEL_PATH = "model/yolov11n_ncnn"
 
 # Serial settings
 SERIAL_PORT = "/dev/ttyAMA0"

@@ -1,5 +1,8 @@
 import serial
 import threading
+import sys
+
+sys.path.append('.')  # noqa
 from utils.defines import SERIAL_PORT, SERIAL_BAUDRATE
 
 
