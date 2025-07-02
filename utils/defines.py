@@ -6,9 +6,9 @@ Defines all constants and configuration values.
 
 # Camera settings
 CAMERA_INDEX = 0
-FRAME_WIDTH = 640
-FRAME_HEIGHT = 480
-TARGET_FPS = 30
+FRAME_WIDTH = 320
+FRAME_HEIGHT = 240
+TARGET_FPS = 7
 
 # Detection thresholds
 CONFIDENCE_THRESHOLD = 0.7

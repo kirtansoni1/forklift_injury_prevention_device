@@ -46,7 +46,7 @@ def main():
 
     # Step 2: Export the model to NCNN format using Ultralytics CLI
     print("📤 Exporting yolo11n.pt to NCNN format...")
-    run_command(["yolo", "export", "model=yolo11n.pt", "format=ncnn"])
+    run_command(["yolo", "export", "model=yolo11n.pt", "format=ncnn", "imgsz=320"])
 
     # Step 3: Validate the exported folder
     if not export_dir.exists():

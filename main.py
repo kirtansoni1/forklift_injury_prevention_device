@@ -11,8 +11,8 @@ import time
 
 
 def main():
-    camera = CameraStream().start()
     detector = AIDetector()
+    camera = CameraStream().start()
     # comm = SerialComm()
 
     # Start Flask server on a separate thread
