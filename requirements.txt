@@ -3,3 +3,4 @@ ncnn
 ultralytics
 pyserial
 matplotlib
+flask

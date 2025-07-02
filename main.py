@@ -1,14 +1,23 @@
+# -*- coding: utf-8 -*-
+
 import cv2
+from threading import Thread
 from utils.camera_stream import CameraStream
 from core.detector import AIDetector
 from comm.serial_comm import SerialComm
-from utils.log import log_info, log_warning, log_error
+from utils.log import log_info, log_error
+from utils.web_stream import start_web_streaming, update_frame
+import time
 
 
 def main():
     camera = CameraStream().start()
     detector = AIDetector()
-    comm = SerialComm()
+    # comm = SerialComm()
+
+    # Start Flask server on a separate thread
+    Thread(target=start_web_streaming, daemon=True).start()
+
     log_info("System initialized. Starting detection loop.")
 
     try:
@@ -21,26 +30,22 @@ def main():
 
             for (x1, y1, x2, y2, conf) in detections:
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.putText(frame, f"{conf:.2f}", (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
 
-            if detections:
-                log_info(f"{len(detections)} human(s) detected.")
-                comm.send("human_detected")
+            # Optional: send/receive logic (currently commented)
+            # if detections:
+            #     comm.send("human_detected")
+            # msg = comm.receive()
+            # if msg:
+            #     log_info(f"Received from ESP32-S3: {msg}")
 
-            msg = comm.receive()
-            if msg:
-                log_info(f"Received from ESP32-S3: {msg}")
-
-            cv2.imshow("Human Detection", frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+            # Update the stream frame for web viewing
+            update_frame(frame)
 
     except Exception as e:
         log_error(f"Exception occurred: {e}")
     finally:
         camera.stop()
-        comm.close()
-        cv2.destroyAllWindows()
+        # comm.close()
         log_info("System shutdown completed.")
 
 
