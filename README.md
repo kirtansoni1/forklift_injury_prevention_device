@@ -3,11 +3,12 @@ This device works like ADAS, but for Forklifts
 
 # Steps to setup
 1) install python3.11
-2) update pip
-3) create venv
-4) install requirements file
-5) run get model script, which will automatically fetch the latest AI model of YOLO11n and create proper dir format
-6) Run the entry point
+2) sudo apt install python3-opencv
+3) update pip
+4) create venv
+5) install requirements file
+6) run get model script, which will automatically fetch the latest AI model of YOLO11n and create proper dir format
+7) Run the entry point
 
 # Directories explanation
 yolov11_rpi5_project/
