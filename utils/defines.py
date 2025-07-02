@@ -9,12 +9,12 @@ FRAME_HEIGHT = 480
 TARGET_FPS = 30
 
 # Detection thresholds
-CONFIDENCE_THRESHOLD = 0.4
+CONFIDENCE_THRESHOLD = 0.7
 IOU_THRESHOLD = 0.45
 TARGET_CLASS = 0  # 'person'
 
 # NCNN model path
-NCNN_MODEL_PATH = "model/yolov11n_ncnn"
+NCNN_MODEL_PATH = "yolo11n_ncnn_model"
 
 # Serial settings
 SERIAL_PORT = "/dev/ttyAMA0"

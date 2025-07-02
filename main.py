@@ -1,13 +1,13 @@
 import cv2
 from utils.camera_stream import CameraStream
-from core.detector import YOLOv11Detector
+from core.detector import AIDetector
 from comm.serial_comm import SerialComm
 from utils.log import log_info, log_warning, log_error
 
 
 def main():
     camera = CameraStream().start()
-    detector = YOLOv11Detector()
+    detector = AIDetector()
     comm = SerialComm()
     log_info("System initialized. Starting detection loop.")
 
