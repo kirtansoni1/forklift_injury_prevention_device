@@ -1,4 +1,5 @@
-# setup/get_model.py
+# -*- coding: utf-8 -*-
+
 import subprocess
 import shutil
 from pathlib import Path

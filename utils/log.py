@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Simple logging utility with timestamped output.
 """

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 Defines all constants and configuration values.
 """
