@@ -5,13 +5,13 @@ from ultralytics import YOLO
 from utils.defines import NCNN_MODEL_PATH, CONFIDENCE_THRESHOLD, TARGET_CLASS
 
 
-class YOLOv11Detector:
+class AIDetector:
     """
     YOLOv11 detector using Ultralytics NCNN model.
     """
 
     def __init__(self):
-        self.model = YOLO(NCNN_MODEL_PATH)
+        self.model = YOLO(NCNN_MODEL_PATH, task='detect')
 
     def detect_humans(self, frame):
         results = self.model(frame, verbose=False)
