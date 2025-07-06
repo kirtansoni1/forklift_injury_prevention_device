@@ -20,7 +20,7 @@ class AIDetector:
         humans = []
         for result in results:
             for box in result.boxes:
-                if int(box.cls[0]) == TARGET_CLASS and float(box.conf[0]) > CONFIDENCE_THRESHOLD:
+                if float(box.conf[0]) > CONFIDENCE_THRESHOLD:
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     conf = float(box.conf[0])
                     humans.append((x1, y1, x2, y2, conf))

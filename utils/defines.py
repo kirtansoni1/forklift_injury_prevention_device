@@ -16,7 +16,7 @@ IOU_THRESHOLD = 0.45
 TARGET_CLASS = 0  # 'person'
 
 # NCNN model path
-NCNN_MODEL_PATH = "yolo11n_ncnn_model"
+NCNN_MODEL_PATH = r"traning\runs\train\yolov11n_320\weights\best.pt"
 
 # Serial settings
 SERIAL_PORT = "/dev/ttyAMA0"
