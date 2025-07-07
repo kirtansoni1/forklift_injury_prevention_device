@@ -18,7 +18,7 @@ import shutil
 from pathlib import Path
 
 # -------------------- CONFIGURATION --------------------
-SOURCE_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Cleaned_Dataset")  # Replace with path to source dataset
+SOURCE_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\data")  # Replace with path to source dataset
 DESTINATION_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Forklift_Dataset")  # Replace with destination path
 
 # -------------------- MAIN SCRIPT --------------------

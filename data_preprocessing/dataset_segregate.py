@@ -4,14 +4,14 @@ from pathlib import Path
 # -------------------- CONFIGURATION --------------------
 # Must contain train/, valid/, test/
 INPUT_DATASET_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Test2.v1i.yolov11")
-OUTPUT_BASE_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\data")  # Will create class_0/, class_1/, etc.
+OUTPUT_BASE_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\data")  # Will create class_x_y/... folders
 # -------------------------------------------------------
 
 SPLITS = ['train', 'valid', 'test']
 
 
-def extract_classes_from_label(label_path: Path):
-    """Extract all class IDs from a YOLO label file."""
+def extract_class_combination(label_path: Path):
+    """Return sorted tuple of unique class IDs found in label file."""
     class_ids = set()
     try:
         with label_path.open('r') as f:
@@ -20,8 +20,13 @@ def extract_classes_from_label(label_path: Path):
                 if parts and parts[0].isdigit():
                     class_ids.add(int(parts[0]))
     except Exception as e:
-        print(f"[ERROR] Failed reading {label_path}: {e}")
-    return class_ids
+        print(f"[ERROR] Reading {label_path}: {e}")
+    return tuple(sorted(class_ids))
+
+
+def get_combination_folder_name(class_ids_tuple):
+    """Generate folder name like class_0_2 from tuple (0, 2)."""
+    return "class_" + "_".join(str(cid) for cid in class_ids_tuple)
 
 
 def segregate_dataset():
@@ -38,23 +43,25 @@ def segregate_dataset():
             image_file = next((f for f in image_dir.glob(f"{stem}.*")), None)
 
             if not image_file:
-                print(f"[WARN] No image found for label {label_file.name}")
+                print(f"[WARN] No image found for label: {label_file.name}")
                 continue
 
-            class_ids = extract_classes_from_label(label_file)
+            class_ids = extract_class_combination(label_file)
+            if not class_ids:
+                continue
 
-            for class_id in class_ids:
-                class_dir = OUTPUT_BASE_DIR / f"class_{class_id}"
-                class_images = class_dir / "images"
-                class_labels = class_dir / "labels"
+            combo_folder_name = get_combination_folder_name(class_ids)
+            combo_dir = OUTPUT_BASE_DIR / combo_folder_name
+            image_out_dir = combo_dir / "images"
+            label_out_dir = combo_dir / "labels"
 
-                class_images.mkdir(parents=True, exist_ok=True)
-                class_labels.mkdir(parents=True, exist_ok=True)
+            image_out_dir.mkdir(parents=True, exist_ok=True)
+            label_out_dir.mkdir(parents=True, exist_ok=True)
 
-                shutil.copy2(image_file, class_images / image_file.name)
-                shutil.copy2(label_file, class_labels / label_file.name)
+            shutil.copy2(image_file, image_out_dir / image_file.name)
+            shutil.copy2(label_file, label_out_dir / label_file.name)
 
-    print("✅ YOLO dataset segregation complete.")
+    print("✅ Dataset segregation by class combinations complete.")
 
 
 if __name__ == "__main__":
