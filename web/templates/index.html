@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forklift Injury Prevention Device</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Forklift Injury Prevention Device Live Stream</h1>
+    <p>Streaming from Raspberry Pi</p>
+    <div class="stream-container">
+        <img class="stream" src="/video_feed" alt="Live Stream Unavailable">
+    </div>
+
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

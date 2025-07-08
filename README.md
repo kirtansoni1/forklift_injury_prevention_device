@@ -19,6 +19,9 @@ yolov11_rpi5_project/
 │   ├── camera_stream.py           # Multithreaded camera handling
 │   ├── defines.py                 # All constants and magic numbers
 |   └── log.py                     # Centralized log file generator
+├── web/
+│   ├── templates/                 # Flask HTML templates
+│   └── static/                    # CSS, JS and images
 ├── comm/
 │   └── serial_comm.py             # Serial communication abstraction (RPI5 ⇆ ESP32-S3)
 ├── test_script/                   # To quickly test the hardware connection or if any error in hardware 
