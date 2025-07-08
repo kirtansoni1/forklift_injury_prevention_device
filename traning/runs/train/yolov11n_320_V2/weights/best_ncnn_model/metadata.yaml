@@ -1,0 +1,19 @@
+description: Ultralytics YOLO11n model trained on G:\Work\ForkLift_Safety_System\Dataset\Forklift_Dataset\data.yaml
+author: Ultralytics
+date: '2025-07-08T20:05:51.760372'
+version: 8.3.162
+license: AGPL-3.0 License (https://ultralytics.com/license)
+docs: https://docs.ultralytics.com
+stride: 32
+task: detect
+batch: 1
+imgsz:
+- 320
+- 320
+names:
+  0: face
+  1: phone
+args:
+  batch: 1
+  half: false
+channels: 3

@@ -18,7 +18,7 @@ from ultralytics import YOLO
 
 # -------------------- CONFIGURATION --------------------
 # 🔁 Change to yolov11n.pt or your trained model path
-MODEL_PATH = r"traning\runs\train\yolov11n_320_V2\weights\best.pt"
+MODEL_PATH = r"traning\runs\train\yolov11n_320_V2\weights\best_ncnn_model"
 CONFIDENCE_THRESHOLD = 0.3     # 🔁 Minimum confidence to show detection
 WEBCAM_INDEX = 0               # 🔁 Index for cv2.VideoCapture
 
@@ -42,7 +42,7 @@ def run_webcam_detection():
             break
 
         # Run detection
-        results = model.predict(source=frame, device='cuda', conf=CONFIDENCE_THRESHOLD, verbose=False)
+        results = model.predict(source=frame, device='cpu', conf=CONFIDENCE_THRESHOLD, verbose=False, task='detect')
 
         # Draw bounding boxes manually
         for r in results:
