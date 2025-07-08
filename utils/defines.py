@@ -21,7 +21,7 @@ PHONE_CLASS_ID = 1  # 'cell phone'
 # Path to the NCNN model used by the detector. The original path contained a
 # typo which prevented the model from loading, resulting in an empty video feed
 # in the web interface.
-NCNN_MODEL_PATH = Path(__file__).resolve().parent / "traning" / "runs" / "train" / \
+NCNN_MODEL_PATH = Path(__name__).resolve().parent / "traning" / "runs" / "train" / \
     "yolov11n_320_V2" / "weights" / "yolov11n_320_V2_ncnn_model"
 
 # Serial settings
