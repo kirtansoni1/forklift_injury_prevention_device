@@ -3,39 +3,37 @@ from pathlib import Path
 import sys
 
 
-def convert_to_ncnn(pt_model_path: str, output_dir: str = None):
+def export_ncnn(pt_model_path: str):
     pt_model = Path(pt_model_path).resolve()
 
     if not pt_model.exists():
-        print(f"❌ Model file not found: {pt_model}")
+        print(f"❌ Error: .pt model not found: {pt_model}")
         sys.exit(1)
 
-    # Create output directory
-    out_dir = Path(output_dir) if output_dir else pt_model.parent / f"{pt_model.stem}_ncnn_model_V2"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    print(f"🔁 Exporting NCNN from: {pt_model}")
 
-    # Prepare YOLO CLI command
-    cmd = [
-        "yolo",
-        "export",
-        f"model={str(pt_model)}",
-        "format=ncnn",
-        f"name={out_dir.name}"
-    ]
+    # Run the export command
+    result = subprocess.run(
+        ["yolo", "export", f"model={str(pt_model)}", "format=ncnn"],
+        capture_output=True,
+        text=True
+    )
 
-    # Run export
-    print(f"🔁 Exporting {pt_model.name} to NCNN format...")
-    result = subprocess.run(cmd, cwd=out_dir.parent, capture_output=True, text=True)
+    print(result.stdout)
+    print(result.stderr)
 
     if result.returncode != 0:
-        print("❌ Conversion failed:")
-        print(result.stderr)
+        print("❌ NCNN export failed.")
         sys.exit(1)
+
+    # Confirm the expected output folder exists
+    expected_ncnn_dir = pt_model.parent / "best_ncnn_model"
+    if expected_ncnn_dir.exists():
+        print(f"✅ NCNN model exported to: {expected_ncnn_dir}")
     else:
-        print(f"✅ Conversion successful. Files saved in: {out_dir}")
-        print(result.stdout)
+        print("⚠️ Export completed, but expected output folder not found. Check above logs.")
 
 
 if __name__ == "__main__":
-    # Example usage
-    convert_to_ncnn(r"traning\runs\train\yolov11n_320_V2\weights\best.pt")  # Replace with your .pt path
+    # Example usage — just change this line
+    export_ncnn(r"traning\runs\train\yolov11n_320\weights\yolov11n_320.pt")

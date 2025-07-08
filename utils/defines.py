@@ -17,7 +17,7 @@ FACE_CLASS_ID = 0  # 'person'
 PHONE_CLASS_ID = 1  # 'cell phone'
 
 # NCNN model path
-NCNN_MODEL_PATH = r"traning\runs\train\yolov11n_320_V2\weights\best_ncnn_model"
+NCNN_MODEL_PATH = r"traning\runs\train\yolov11n_320_V2\weights\yolov11n_320_ncnn_V2"
 
 # Serial settings
 SERIAL_PORT = "/dev/ttyAMA0"
