@@ -5,11 +5,11 @@ This script opens a webcam stream on a Windows machine and runs YOLO object dete
 on each frame in real-time using the Ultralytics YOLOv8/Yolov11 model.
 
 Make sure:
-- You have a compatible CUDA setup (optional but recommended)
+- You have a compatible CUDA setup
 - You have installed ultralytics: `pip install ultralytics`
 - Your webcam works with OpenCV
 
-Author: [Your Name / Organization]
+Author: Kirtan Soni
 Version: 1.0
 """
 
