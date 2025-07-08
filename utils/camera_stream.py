@@ -18,7 +18,7 @@ class CameraStream:
         # reliably across different Linux environments. Without this, OpenCV
         # may pick an incompatible backend and no frames will be captured.
         self.cap = cv2.VideoCapture(CAMERA_INDEX, cv2.CAP_V4L2)
-        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+        self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 2)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
         self.cap.set(cv2.CAP_PROP_FPS, TARGET_FPS)
@@ -39,7 +39,8 @@ class CameraStream:
 
     def read(self):
         with self.lock:
-            return self.frame.copy() if self.frame is not None else None
+            frame = self.frame
+        return None if frame is None else frame
 
     def stop(self):
         self.stopped = True
