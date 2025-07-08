@@ -3,6 +3,7 @@
 from flask import Flask, Response, render_template
 import cv2
 import threading
+import time
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,12 +30,18 @@ def generate():
     global _current_frame
     while True:
         with _lock:
-            if _current_frame is None:
-                continue
-            success, jpeg = cv2.imencode('.jpg', _current_frame)
-            if not success:
-                continue
-            frame_bytes = jpeg.tobytes()
+            frame = None if _current_frame is None else _current_frame.copy()
+
+        if frame is None:
+            time.sleep(0.01)
+            continue
+
+        success, jpeg = cv2.imencode('.jpg', frame)
+        if not success:
+            time.sleep(0.01)
+            continue
+
+        frame_bytes = jpeg.tobytes()
 
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
@@ -55,4 +62,7 @@ def video_feed():
 
 def start_web_streaming():
     """Start Flask server (non-blocking)."""
-    app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
+    # Disable the reloader when running inside a thread to avoid spawning
+    # additional processes.
+    app.run(host="0.0.0.0", port=5000, debug=False, threaded=True,
+            use_reloader=False)

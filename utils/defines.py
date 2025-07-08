@@ -17,7 +17,12 @@ FACE_CLASS_ID = 0  # 'person'
 PHONE_CLASS_ID = 1  # 'cell phone'
 
 # NCNN model path
-NCNN_MODEL_PATH = r"traning\runs\train\yolov11n_320_V2\weights\yolov11n_320_ncnn_V2"
+# Path to the NCNN model used by the detector. The original path contained a
+# typo which prevented the model from loading, resulting in an empty video feed
+# in the web interface.
+NCNN_MODEL_PATH = (
+    r"traning\runs\train\yolov11n_320_V2\weights\yolov11n_320_V2_ncnn_model"
+)
 
 # Serial settings
 SERIAL_PORT = "/dev/ttyAMA0"
