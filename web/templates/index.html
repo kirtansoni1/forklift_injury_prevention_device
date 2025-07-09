@@ -6,29 +6,9 @@
     <title>Forklift Injury Prevention Device</title>
     <style>
         :root {
-            --primary-color: {
-                    {
-                    primary_color
-                }
-            }
-
-            ;
-
-            --alert-color: {
-                    {
-                    alert_color
-                }
-            }
-
-            ;
-
-            --info-color: {
-                    {
-                    info_color
-                }
-            }
-
-            ;
+            --primary-color: {{ primary_color }};
+            --alert-color: {{ alert_color }};
+            --info-color: {{ info_color }};
         }
     </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">

@@ -102,34 +102,3 @@ button:hover {
 .notice.critical {
     background-color: var(--alert-color);
 }
-
-.stream-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-#overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-button {
-    background-color: #ffca28;
-    color: #121212;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-button:hover {
-    background-color: #ffc107;
-}
-
-.message {
-    margin-top: 10px;
-    height: 20px;
-    color: #ffca28;
-}
