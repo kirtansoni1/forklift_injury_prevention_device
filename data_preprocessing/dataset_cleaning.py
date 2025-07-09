@@ -42,6 +42,7 @@ Usage:
 Author: Kirtan Soni
 Version: 1.0
 """
+import os
 import shutil
 from pathlib import Path
 import random
@@ -49,10 +50,10 @@ import cv2
 
 # -------------------- CONFIGURATION PARAMETERS --------------------
 # Input dataset directory in YOLO format
-INPUT_DATASET_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\fullModel.v1i.yolov11")
+INPUT_DATASET_DIR = Path(os.environ.get("INPUT_DATASET_DIR", "dataset/fullModel.v1i.yolov11"))
 
 # Output directory where cleaned dataset will be saved
-OUTPUT_DATASET_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Cleaned_Dataset")
+OUTPUT_DATASET_DIR = Path(os.environ.get("OUTPUT_DATASET_DIR", "dataset/Cleaned_Dataset"))
 
 # Output directory for removed images with visual bounding boxes
 REMOVED_DIR = OUTPUT_DATASET_DIR / "removed"

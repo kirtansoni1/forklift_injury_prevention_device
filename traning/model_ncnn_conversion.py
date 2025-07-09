@@ -36,4 +36,4 @@ def export_ncnn(pt_model_path: str):
 
 if __name__ == "__main__":
     # Example usage — just change this line
-    export_ncnn(r"traning\runs\train\yolov11n_320\weights\yolov11n_320.pt")
+    export_ncnn(Path("traning") / "runs" / "train" / "yolov11n_320" / "weights" / "yolov11n_320.pt")

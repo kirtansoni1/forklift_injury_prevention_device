@@ -13,16 +13,17 @@ Author: Kirtan Soni
 Version: 1.0
 """
 
+import os
 from pathlib import Path
 import shutil
 import cv2
 
 # -------------------- CONFIGURATION --------------------
-DATASET_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Forklift_Dataset")  # 🔁 Path to the YOLO dataset directory
-# 🔁 Cleaned dataset with only bounding boxes
-OUTPUT_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\cleaned_data")
-# 🔁 Removed files with non-bbox data
-REMOVED_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\cleaned_data\removed")
+DATASET_DIR = Path(os.environ.get("DATASET_DIR", "dataset/Forklift_Dataset"))  # Path to the YOLO dataset directory
+# Cleaned dataset with only bounding boxes
+OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", "dataset/cleaned_data"))
+# Removed files with non-bbox data
+REMOVED_DIR = Path(os.environ.get("REMOVED_DIR", OUTPUT_DIR / "removed"))
 IMG_FORMATS = [".jpg", ".png"]                     # Accepted image formats
 VISUALIZE_REMOVED = True                            # Draw and save bounding boxes for removed files
 

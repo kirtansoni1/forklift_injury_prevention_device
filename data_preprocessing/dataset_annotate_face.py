@@ -5,8 +5,8 @@ from ultralytics import YOLO
 from tqdm import tqdm
 
 # ---------------------- CONFIGURATION ----------------------
-INPUT_FOLDER = Path(r"G:\Work\ForkLift_Safety_System\Dataset\FACEANDPHONE.v2i.yolov11")
-MODEL_PATH = r"G:\MasterThesis\final_code_base\models\yolov8m_FINAL_DATA.pt"
+INPUT_FOLDER = Path(os.environ.get("INPUT_FOLDER", "dataset/FACEANDPHONE.v2i.yolov11"))
+MODEL_PATH = Path(os.environ.get("MODEL_PATH", "models/yolov8m_FINAL_DATA.pt"))
 FACE_CLASS = 0
 CONF_THRESHOLD = 0.4
 SAVE_LIMIT = 2500

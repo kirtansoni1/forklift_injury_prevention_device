@@ -14,13 +14,17 @@ Author: Kirtan Soni
 Version: 1.0
 """
 
+import os
 import shutil
 from pathlib import Path
 
 # -------------------- CONFIGURATION --------------------
-# Replace with path to source dataset
-SOURCE_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\FACEANDPHONE.v2i.yolov11")
-DESTINATION_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Forklift_Dataset")  # Replace with destination path
+# Paths can be overridden using environment variables for cross-platform support
+DEFAULT_SOURCE = Path("dataset/source")
+DEFAULT_DESTINATION = Path("dataset/destination")
+
+SOURCE_DIR = Path(os.environ.get("SOURCE_DIR", DEFAULT_SOURCE))
+DESTINATION_DIR = Path(os.environ.get("DESTINATION_DIR", DEFAULT_DESTINATION))
 
 # -------------------- MAIN SCRIPT --------------------
 
