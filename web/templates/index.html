@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Forklift Injury Prevention Device</title>
+    <style>
+        :root {
+            --primary-color: {{ primary_color }};
+            --alert-color: {{ alert_color }};
+            --info-color: {{ info_color }};
+        }
+    </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -12,7 +19,13 @@
         <div class="stream-wrapper">
             <img id="stream" class="stream" src="/video_feed" alt="Live Stream Unavailable">
             <canvas id="overlay"></canvas>
+            <div id="notice" class="notice"></div>
         </div>
+    </div>
+    <div class="indicator-container">
+        <div id="phoneLabel" class="indicator">Phone Detected: No</div>
+        <div id="operatorLabel" class="indicator">Operator: Not Present</div>
+        <div id="countLabel" class="indicator">Number of Operator: 0</div>
     </div>
     <button id="setBoundsBtn">SET BOUNDS</button>
     <div id="message" class="message"></div>

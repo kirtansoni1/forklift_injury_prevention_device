@@ -5,6 +5,13 @@ import cv2
 import threading
 import time
 from pathlib import Path
+from utils.defines import (
+    FRAME_WIDTH,
+    UI_PRIMARY_COLOR,
+    UI_ALERT_COLOR,
+    UI_INFO_COLOR,
+    NOTICE_DURATION,
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 app = Flask(
@@ -17,6 +24,8 @@ app = Flask(
 _lock = threading.Lock()
 _current_frame = None
 _bounds = None
+_status = {"phone": False, "operator": "Not Present", "count": 0, "fps": 0.0}
+_notice = {"message": "", "level": "info", "time": 0.0}
 
 
 def update_frame(frame):
@@ -51,7 +60,12 @@ def generate():
 @app.route('/')
 def index():
     """Render the main video stream page."""
-    return render_template("index.html")
+    return render_template(
+        "index.html",
+        primary_color=UI_PRIMARY_COLOR,
+        alert_color=UI_ALERT_COLOR,
+        info_color=UI_INFO_COLOR,
+    )
 
 
 @app.route('/video_feed')
@@ -68,13 +82,44 @@ def set_bounds():
     data = request.get_json(force=True)
     if not data or 'x1' not in data or 'x2' not in data:
         return jsonify({'status': 'error'}), 400
-    _bounds = (int(data['x1']), int(data['x2']))
+    try:
+        x1 = max(0.0, min(float(data['x1']), 1.0))
+        x2 = max(0.0, min(float(data['x2']), 1.0))
+    except (TypeError, ValueError):
+        return jsonify({'status': 'error'}), 400
+    _bounds = (int(x1 * FRAME_WIDTH), int(x2 * FRAME_WIDTH))
     return jsonify({'status': 'ok'})
 
 
 def get_bounds():
     """Return the currently configured bounding lines."""
     return _bounds
+
+
+def update_status(phone: bool, operator: str, count: int, fps: float):
+    """Update live status values for the web UI."""
+    global _status
+    _status.update(phone=phone, operator=operator, count=count, fps=fps)
+
+
+def set_notice(message: str, level: str = "info"):
+    """Display a transient notice overlay on the web UI."""
+    global _notice
+    _notice = {"message": message, "level": level, "time": time.time()}
+
+
+def get_notice():
+    """Return the current notice if not expired."""
+    global _notice
+    if _notice["message"] and time.time() - _notice["time"] > NOTICE_DURATION:
+        _notice = {"message": "", "level": "info", "time": 0.0}
+    return {"message": _notice["message"], "level": _notice["level"]}
+
+
+@app.route('/status')
+def status():
+    """Provide detection status for the web UI."""
+    return jsonify({**_status, "notice": get_notice()})
 
 
 def start_web_streaming():
