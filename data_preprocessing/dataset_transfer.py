@@ -18,7 +18,8 @@ import shutil
 from pathlib import Path
 
 # -------------------- CONFIGURATION --------------------
-SOURCE_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\data")  # Replace with path to source dataset
+# Replace with path to source dataset
+SOURCE_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\FACEANDPHONE.v2i.yolov11")
 DESTINATION_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Forklift_Dataset")  # Replace with destination path
 
 # -------------------- MAIN SCRIPT --------------------
