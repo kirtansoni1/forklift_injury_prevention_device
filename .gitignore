@@ -5,3 +5,4 @@ modeldataset
 __pycache__/
 *.pyc
 dataset
+settings.json

@@ -1,13 +1,18 @@
 {
-    "files.associations": {
-        "fstream": "cpp",
-        "sstream": "cpp"
-    },
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": false,
     "[python]": {
-        "editor.defaultFormatter": "ms-python.autopep8"
+        "editor.defaultFormatter": "ms-python.autopep8",
+        "editor.formatOnSave": true
     },
-    "autopep8.importStrategy": "useBundled",
+    "[html]": {
+        "editor.formatOnSave": false
+    },
+    "[jinja-html]": {
+        "editor.formatOnSave": false
+    },
+    "files.associations": {
+        "*.html": "jinja-html"
+    },
     "autopep8.args": [
         "--max-line-length",
         "120"
