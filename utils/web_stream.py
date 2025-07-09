@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, request, jsonify
 import cv2
 import threading
 import time
@@ -16,6 +16,7 @@ app = Flask(
 # Global frame buffer and lock
 _lock = threading.Lock()
 _current_frame = None
+_bounds = None
 
 
 def update_frame(frame):
@@ -58,6 +59,22 @@ def video_feed():
     """Stream the frame via MJPEG."""
     return Response(generate(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+@app.route('/set_bounds', methods=['POST'])
+def set_bounds():
+    """Receive bounding line coordinates from the web UI."""
+    global _bounds
+    data = request.get_json(force=True)
+    if not data or 'x1' not in data or 'x2' not in data:
+        return jsonify({'status': 'error'}), 400
+    _bounds = (int(data['x1']), int(data['x2']))
+    return jsonify({'status': 'ok'})
+
+
+def get_bounds():
+    """Return the currently configured bounding lines."""
+    return _bounds
 
 
 def start_web_streaming():

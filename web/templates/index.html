@@ -9,8 +9,13 @@
     <h1>Forklift Injury Prevention Device Live Stream</h1>
     <p>Streaming from Raspberry Pi</p>
     <div class="stream-container">
-        <img class="stream" src="/video_feed" alt="Live Stream Unavailable">
+        <div class="stream-wrapper">
+            <img id="stream" class="stream" src="/video_feed" alt="Live Stream Unavailable">
+            <canvas id="overlay"></canvas>
+        </div>
     </div>
+    <button id="setBoundsBtn">SET BOUNDS</button>
+    <div id="message" class="message"></div>
 
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
