@@ -10,10 +10,11 @@ from pathlib import Path
 CAMERA_INDEX = 0
 FRAME_WIDTH = 320
 FRAME_HEIGHT = 320
-TARGET_FPS = 7
 
 # Detection thresholds
-CONFIDENCE_THRESHOLD = 0.4
+CONFIDENCE_THRESHOLD = 0.4  # General detection confidence threshold
+CONFIDENCE_THRESHOLD_FACE = 0.3
+CONFIDENCE_THRESHOLD_PHONE = 0.65
 FACE_CLASS_ID = 0  # 'face'
 PHONE_CLASS_ID = 1  # 'phone'
 
@@ -28,7 +29,9 @@ SERIAL_PORT = "COM3" if os.name == "nt" else "/dev/ttyAMA0"
 SERIAL_BAUDRATE = 115200
 
 # Drawing colors (BGR)
-BOX_COLOR = (0, 255, 0)
+FACE_DETECTION_COLOR = (0, 255, 0)
+PHONE_DETECTION_COLOR = (0, 0, 255)
+FPS_COLOR = (0, 255, 0)
 BOUND_LINE_COLOR = (255, 202, 40)
 POINT_COLOR = (255, 0, 0)
 
@@ -42,7 +45,7 @@ NOTICE_DURATION = 3
 
 # Detection settings
 DRAW_POINT_OFFSET = 5  # Pixels below the top line of the bbox
-PHONE_DETECT_FRAMES = 15
+PHONE_DETECT_FRAMES = 30
 
 # Serial command messages
 PHONE_COMMAND = "phone_detected"

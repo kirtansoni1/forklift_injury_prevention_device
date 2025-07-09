@@ -16,7 +16,9 @@ from utils.web_stream import (
 from utils.defines import (
     FACE_CLASS_ID,
     PHONE_CLASS_ID,
-    BOX_COLOR,
+    FACE_DETECTION_COLOR,
+    PHONE_DETECTION_COLOR,
+    FPS_COLOR,
     POINT_COLOR,
     BOUND_LINE_COLOR,
     DRAW_POINT_OFFSET,
@@ -24,6 +26,8 @@ from utils.defines import (
     BREACH_COMMAND,
     FRAME_HEIGHT,
     PHONE_DETECT_FRAMES,
+    CONFIDENCE_THRESHOLD_FACE,
+    CONFIDENCE_THRESHOLD_PHONE
 )
 import time
 
@@ -68,12 +72,15 @@ def main():
                 if cls_id == PHONE_CLASS_ID:
                     phone_present = True
 
-                if cls_id == FACE_CLASS_ID:
+                if cls_id == FACE_CLASS_ID and conf > CONFIDENCE_THRESHOLD_FACE:
                     operator_count += 1
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), BOX_COLOR, 2)
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), FACE_DETECTION_COLOR, 2)
                     mid_x = (x1 + x2) // 2
                     mid_y = y1 + DRAW_POINT_OFFSET
                     cv2.circle(frame, (mid_x, mid_y), 3, POINT_COLOR, -1)
+
+                if cls_id == PHONE_CLASS_ID and conf > CONFIDENCE_THRESHOLD_PHONE:
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), PHONE_DETECTION_COLOR, 2)
 
                     if bounds is not None:
                         left, right = sorted(bounds)
@@ -113,7 +120,7 @@ def main():
 
             # Draw FPS on frame
             cv2.putText(frame, f"FPS: {fps:.1f}", (10, 20), cv2.FONT_HERSHEY_SIMPLEX,
-                        0.6, BOX_COLOR, 2)
+                        0.6, FPS_COLOR, 2)
 
             # Update status for UI
             update_status(phone_present, operator_status, operator_count, round(fps, 1))
