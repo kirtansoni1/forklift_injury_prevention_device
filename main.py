@@ -4,7 +4,7 @@ import cv2
 from threading import Thread
 from utils.camera_stream import CameraStream
 from core.detector import AIDetector
-from comm.serial_comm import SerialComm
+# from comm.serial_comm import SerialComm
 from utils.log import log_info, log_error
 from utils.web_stream import (
     start_web_streaming,
