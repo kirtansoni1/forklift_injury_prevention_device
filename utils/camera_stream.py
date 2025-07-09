@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import cv2
 import threading
 import sys
@@ -14,11 +15,9 @@ class CameraStream:
     """
 
     def __init__(self):
-        # Explicitly select the V4L2 backend so the USB/CSI camera works
-        # reliably across different Linux environments. Without this, OpenCV
-        # may pick an incompatible backend and no frames will be captured.
-        self.cap = cv2.VideoCapture(CAMERA_INDEX)
-        # self.cap = cv2.VideoCapture(CAMERA_INDEX, cv2.CAP_V4L2)
+        # Select appropriate backend based on operating system
+        backend = cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_V4L2
+        self.cap = cv2.VideoCapture(CAMERA_INDEX, backend)
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)

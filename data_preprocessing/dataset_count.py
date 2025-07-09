@@ -16,10 +16,11 @@ Author: Kirtan Soni
 Version: 1.0
 """
 
+import os
 from pathlib import Path
 
 # -------------------- CONFIGURATION --------------------
-DATASET_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Forklift_Dataset")  # Replace with your YOLO dataset path
+DATASET_DIR = Path(os.environ.get("DATASET_DIR", "dataset/Forklift_Dataset"))  # Replace with your YOLO dataset path
 
 # -------------------- MAIN SCRIPT --------------------
 

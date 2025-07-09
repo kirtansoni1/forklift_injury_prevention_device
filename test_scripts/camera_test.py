@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import os
 import cv2
 import time
 
 
 def main():
     # Use the correct camera index (0 is default USB cam)
-    cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
+    backend = cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_V4L2
+    cap = cv2.VideoCapture(0, backend)
 
     # Set camera resolution (choose based on camera capability & FPS tradeoff)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)

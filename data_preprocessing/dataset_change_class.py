@@ -2,7 +2,8 @@ import os
 from pathlib import Path
 
 # --------- CONFIGURATION ---------
-INPUT_FOLDER = Path(r"G:\Work\ForkLift_Safety_System\Dataset\data\class_2")  # replace with your folder path
+# Path can be overridden with the INPUT_FOLDER environment variable
+INPUT_FOLDER = Path(os.environ.get("INPUT_FOLDER", "dataset/data/class_2"))
 OLD_CLASS = 2
 NEW_CLASS = 1
 EXT = ".txt"

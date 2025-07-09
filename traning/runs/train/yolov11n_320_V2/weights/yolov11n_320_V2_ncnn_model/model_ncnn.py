@@ -1,15 +1,17 @@
 import numpy as np
 import ncnn
 import torch
+from pathlib import Path
 
 def test_inference():
     torch.manual_seed(0)
     in0 = torch.rand(1, 3, 320, 320, dtype=torch.float)
     out = []
 
+    model_dir = Path(__file__).resolve().parent
     with ncnn.Net() as net:
-        net.load_param("G:\Work\ForkLift_Safety_System\Software\forklift_injury_prevention_device\traning\runs\train\yolov11n_320_V2\weights\yolov11n_320_V2_ncnn_model\model.ncnn.param")
-        net.load_model("G:\Work\ForkLift_Safety_System\Software\forklift_injury_prevention_device\traning\runs\train\yolov11n_320_V2\weights\yolov11n_320_V2_ncnn_model\model.ncnn.bin")
+        net.load_param(str(model_dir / "model.ncnn.param"))
+        net.load_model(str(model_dir / "model.ncnn.bin"))
 
         with net.create_extractor() as ex:
             ex.input("in0", ncnn.Mat(in0.squeeze(0).numpy()).clone())

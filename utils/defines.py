@@ -3,6 +3,7 @@
 """
 Defines all constants and configuration values.
 """
+import os
 from pathlib import Path
 
 # Camera settings
@@ -21,9 +22,10 @@ PHONE_CLASS_ID = 1  # 'cell phone'
 # Path to the NCNN model used by the detector. The original path contained a
 # typo which prevented the model from loading, resulting in an empty video feed
 # in the web interface.
-NCNN_MODEL_PATH = Path(__name__).resolve().parent / "traning" / "runs" / "train" / \
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+NCNN_MODEL_PATH = PROJECT_ROOT / "traning" / "runs" / "train" / \
     "yolov11n_320_V2" / "weights" / "yolov11n_320_V2_ncnn_model"
 
 # Serial settings
-SERIAL_PORT = "/dev/ttyAMA0"
+SERIAL_PORT = "COM3" if os.name == "nt" else "/dev/ttyAMA0"
 SERIAL_BAUDRATE = 115200

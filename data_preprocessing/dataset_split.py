@@ -5,8 +5,8 @@ from pathlib import Path
 
 # ---------------- CONFIGURATION ----------------
 # Path to folder containing 'images/' and 'labels/'
-INPUT_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\data\class_2")
-OUTPUT_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\DATA")  # Output base directory
+INPUT_DIR = Path(os.environ.get("INPUT_DIR", "dataset/data/class_2"))
+OUTPUT_DIR = Path(os.environ.get("OUTPUT_DIR", "dataset/DATA"))  # Output base directory
 
 SPLIT_RATIO = {
     'train': 0.7,
