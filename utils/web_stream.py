@@ -88,7 +88,14 @@ def set_bounds():
         x2 = max(0.0, min(float(data['x2']), 1.0))
     except (TypeError, ValueError):
         return jsonify({'status': 'error'}), 400
-    _bounds = (int(x1 * FRAME_WIDTH), int(x2 * FRAME_WIDTH))
+    # Determine the width of the most recent frame if available. This ensures
+    # that the bounding line positions match the actual streamed frame even if
+    # the camera resolution differs from the configured FRAME_WIDTH constant.
+    with _lock:
+        frame_width = (_current_frame.shape[1]
+                       if _current_frame is not None else FRAME_WIDTH)
+
+    _bounds = (int(x1 * frame_width), int(x2 * frame_width))
     return jsonify({'status': 'ok'})
 
 

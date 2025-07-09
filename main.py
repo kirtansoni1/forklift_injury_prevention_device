@@ -24,7 +24,6 @@ from utils.defines import (
     DRAW_POINT_OFFSET,
     PHONE_COMMAND,
     BREACH_COMMAND,
-    FRAME_HEIGHT,
     PHONE_DETECT_FRAMES,
     CONFIDENCE_THRESHOLD_FACE,
     CONFIDENCE_THRESHOLD_PHONE
@@ -60,8 +59,9 @@ def main():
 
             bounds = get_bounds()
             if bounds is not None:
-                cv2.line(frame, (bounds[0], 0), (bounds[0], FRAME_HEIGHT), BOUND_LINE_COLOR, 2)
-                cv2.line(frame, (bounds[1], 0), (bounds[1], FRAME_HEIGHT), BOUND_LINE_COLOR, 2)
+                height = frame.shape[0]
+                cv2.line(frame, (bounds[0], 0), (bounds[0], height), BOUND_LINE_COLOR, 2)
+                cv2.line(frame, (bounds[1], 0), (bounds[1], height), BOUND_LINE_COLOR, 2)
 
             phone_present = False
             operator_count = 0
