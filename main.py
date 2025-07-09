@@ -109,6 +109,10 @@ def main():
             if operator_count > 0:
                 if any_outside:
                     operator_status = "Outside safe zone"
+                    # comm.send(BREACH_COMMAND)
+                    set_notice("Return to safe zone", "critical")
+                    update_status(phone_present, operator_status, operator_count,
+                                  round(fps, 1))  # Update status immediately
                 elif any_inside:
                     operator_status = "Inside safe zone"
 
@@ -116,8 +120,6 @@ def main():
                 set_notice("Too many operators", "warning")
 
             if bounds is not None and any_outside and face_was_safe:
-                # comm.send(BREACH_COMMAND)
-                set_notice("Return to safe zone", "critical")
                 face_was_safe = False
             elif any_inside:
                 face_was_safe = True
