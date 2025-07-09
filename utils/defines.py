@@ -3,6 +3,7 @@
 """
 Defines all constants and configuration values.
 """
+import os
 from pathlib import Path
 
 # Camera settings
@@ -23,5 +24,5 @@ PHONE_CLASS_ID = 1  # 'phone'
 NCNN_MODEL_PATH = Path("traning") / "runs" / "train" / "yolov11n_320_V3" / "weights" / "yolov11n_320_V3_ncnn_model"
 
 # Serial settings
-SERIAL_PORT = "/dev/ttyAMA0"
+SERIAL_PORT = "COM3" if os.name == "nt" else "/dev/ttyAMA0"
 SERIAL_BAUDRATE = 115200

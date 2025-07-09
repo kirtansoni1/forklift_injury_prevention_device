@@ -13,12 +13,14 @@ Author: Kirtan Soni
 Version: 1.0
 """
 
+import os
+from pathlib import Path
 import cv2
 from ultralytics import YOLO
 
 # -------------------- CONFIGURATION --------------------
 # 🔁 Change to yolov11n.pt or your trained model path
-MODEL_PATH = r"traning\runs\train\yolov11n_320_V2\weights\best_ncnn_model"
+MODEL_PATH = str(Path("traning") / "runs" / "train" / "yolov11n_320_V2" / "weights" / "best_ncnn_model")
 CONFIDENCE_THRESHOLD = 0.3     # 🔁 Minimum confidence to show detection
 WEBCAM_INDEX = 0               # 🔁 Index for cv2.VideoCapture
 
@@ -30,7 +32,8 @@ def run_webcam_detection():
     model = YOLO(MODEL_PATH)
 
     print("[INFO] Starting webcam stream...")
-    cap = cv2.VideoCapture(WEBCAM_INDEX)
+    backend = cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_V4L2
+    cap = cv2.VideoCapture(WEBCAM_INDEX, backend)
 
     if not cap.isOpened():
         print("[ERROR] Cannot access webcam")

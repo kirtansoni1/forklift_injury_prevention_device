@@ -1,3 +1,4 @@
+import os
 import cv2
 import time
 from pathlib import Path
@@ -26,7 +27,8 @@ def capture_dataset(
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    backend = cv2.CAP_DSHOW if os.name == "nt" else cv2.CAP_V4L2
+    cap = cv2.VideoCapture(0, backend)
     if not cap.isOpened():
         print(f"❌ Failed to open camera at index {camera_index}")
         return

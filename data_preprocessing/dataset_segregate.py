@@ -1,10 +1,11 @@
+import os
 import shutil
 from pathlib import Path
 
 # -------------------- CONFIGURATION --------------------
 # Must contain train/, valid/, test/
-INPUT_DATASET_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\Test2.v1i.yolov11")
-OUTPUT_BASE_DIR = Path(r"G:\Work\ForkLift_Safety_System\Dataset\data")  # Will create class_x_y/... folders
+INPUT_DATASET_DIR = Path(os.environ.get("INPUT_DATASET_DIR", "dataset/Test2.v1i.yolov11"))
+OUTPUT_BASE_DIR = Path(os.environ.get("OUTPUT_BASE_DIR", "dataset/data"))  # Will create class_x_y/... folders
 # -------------------------------------------------------
 
 SPLITS = ['train', 'valid', 'test']
