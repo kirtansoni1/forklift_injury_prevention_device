@@ -17,7 +17,7 @@ class CameraStream:
         # Explicitly select the V4L2 backend so the USB/CSI camera works
         # reliably across different Linux environments. Without this, OpenCV
         # may pick an incompatible backend and no frames will be captured.
-        self.cap = cv2.VideoCapture(CAMERA_INDEX)
+        self.cap = cv2.VideoCapture(CAMERA_INDEX, cv2.CAP_DSHOW)
         # self.cap = cv2.VideoCapture(CAMERA_INDEX, cv2.CAP_V4L2)
         self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
