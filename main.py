@@ -58,10 +58,12 @@ def main():
             detections = detector.detect_humans(frame)
 
             bounds = get_bounds()
-            if bounds is not None:
-                height = frame.shape[0]
-                cv2.line(frame, (bounds[0], 0), (bounds[0], height), BOUND_LINE_COLOR, 2)
-                cv2.line(frame, (bounds[1], 0), (bounds[1], height), BOUND_LINE_COLOR, 2)
+            # Debugging: Uncomment to visualize bounds------------------------------------------
+            # if bounds is not None:
+            #     height = frame.shape[0]
+            #     cv2.line(frame, (bounds[0], 0), (bounds[0], height), BOUND_LINE_COLOR, 2)
+            #     cv2.line(frame, (bounds[1], 0), (bounds[1], height), BOUND_LINE_COLOR, 2)
+            # -----------------------------------------------------------------------------------
 
             phone_present = False
             operator_count = 0
@@ -69,7 +71,8 @@ def main():
             any_outside = False
 
             for (x1, y1, x2, y2, conf, cls_id) in detections:
-                if cls_id == PHONE_CLASS_ID:
+                if cls_id == PHONE_CLASS_ID and conf > CONFIDENCE_THRESHOLD_PHONE:
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), PHONE_DETECTION_COLOR, 2)
                     phone_present = True
 
                 if cls_id == FACE_CLASS_ID and conf > CONFIDENCE_THRESHOLD_FACE:
@@ -79,16 +82,17 @@ def main():
                     mid_y = y1 + DRAW_POINT_OFFSET
                     cv2.circle(frame, (mid_x, mid_y), 3, POINT_COLOR, -1)
 
-                if cls_id == PHONE_CLASS_ID and conf > CONFIDENCE_THRESHOLD_PHONE:
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), PHONE_DETECTION_COLOR, 2)
+                if bounds is not None:
+                    left, right = sorted(bounds)
+                    in_safe = left <= mid_x <= right
+                    if in_safe:
+                        any_inside = True
+                    else:
+                        any_outside = True
 
-                    if bounds is not None:
-                        left, right = sorted(bounds)
-                        in_safe = left <= mid_x <= right
-                        if in_safe:
-                            any_inside = True
-                        else:
-                            any_outside = True
+                if bounds is None:
+                    # If no bounds are set, consider all faces as inside
+                    any_inside = True
 
             # Phone detection majority check
             if phone_present:
