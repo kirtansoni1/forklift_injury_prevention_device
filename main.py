@@ -4,7 +4,7 @@ import cv2
 from threading import Thread
 from utils.camera_stream import CameraStream
 from core.detector import AIDetector
-from comm.serial_comm import SerialComm
+# from comm.serial_comm import SerialComm
 from utils.log import log_info, log_error
 from utils.web_stream import (
     start_web_streaming,
@@ -31,7 +31,7 @@ import time
 def main():
     detector = AIDetector()
     camera = CameraStream().start()
-    comm = SerialComm()
+    # comm = SerialComm()
     face_was_safe = False
     phone_frames = 0
     phone_detections = 0
@@ -89,7 +89,7 @@ def main():
             phone_frames += 1
             if phone_frames >= PHONE_DETECT_FRAMES:
                 if phone_detections > PHONE_DETECT_FRAMES / 2:
-                    comm.send(PHONE_COMMAND)
+                    # comm.send(PHONE_COMMAND)
                     set_notice("Phone detected", "warning")
                 phone_frames = 0
                 phone_detections = 0
@@ -105,7 +105,7 @@ def main():
                 set_notice("Too many operators", "warning")
 
             if bounds is not None and any_outside and face_was_safe:
-                comm.send(BREACH_COMMAND)
+                # comm.send(BREACH_COMMAND)
                 set_notice("Return to safe zone", "critical")
                 face_was_safe = False
             elif any_inside:
