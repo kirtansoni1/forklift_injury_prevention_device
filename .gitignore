@@ -1,5 +1,6 @@
 .venv
 .vscode
 .pio
-model
-dataset
+modeldataset
+__pycache__/
+*.pyc

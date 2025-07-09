@@ -17,11 +17,12 @@ class AIDetector:
 
     def detect_humans(self, frame):
         results = self.model(frame, verbose=False)
-        humans = []
+        detections = []
         for result in results:
             for box in result.boxes:
                 if float(box.conf[0]) > CONFIDENCE_THRESHOLD:
                     x1, y1, x2, y2 = map(int, box.xyxy[0])
                     conf = float(box.conf[0])
-                    humans.append((x1, y1, x2, y2, conf))
-        return humans
+                    cls_id = int(box.cls[0])
+                    detections.append((x1, y1, x2, y2, conf, cls_id))
+        return detections
