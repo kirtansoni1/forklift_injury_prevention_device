@@ -88,7 +88,7 @@ function pollStatus() {
                 noticeBox.style.display = 'none';
             }
         })
-        .catch(() => {})
+        .catch(() => { })
         .finally(() => {
             setTimeout(pollStatus, 1000);
         });

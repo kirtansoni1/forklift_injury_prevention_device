@@ -1,17 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Forklift Injury Prevention Device</title>
     <style>
         :root {
-            --primary-color: {{ primary_color }};
-            --alert-color: {{ alert_color }};
-            --info-color: {{ info_color }};
+            --primary-color: {
+                    {
+                    primary_color
+                }
+            }
+
+            ;
+
+            --alert-color: {
+                    {
+                    alert_color
+                }
+            }
+
+            ;
+
+            --info-color: {
+                    {
+                    info_color
+                }
+            }
+
+            ;
         }
     </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
     <h1>Forklift Injury Prevention Device Live Stream</h1>
     <p>Streaming from Raspberry Pi</p>
@@ -32,4 +54,5 @@
 
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
+
 </html>

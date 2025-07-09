@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, Response, render_template, request, jsonify
+from flask import Flask, Response, render_template, request, jsonify
 import cv2
 import threading
 import time
