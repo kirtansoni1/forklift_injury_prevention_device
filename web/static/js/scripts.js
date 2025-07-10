@@ -21,7 +21,7 @@ function adjustCanvas() {
 function drawLines() {
     ctx.clearRect(0, 0, overlay.width, overlay.height);
     ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--primary-color');
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 4;
     points.forEach((x) => {
         ctx.beginPath();
         ctx.moveTo(x, 0);
