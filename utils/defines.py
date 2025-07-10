@@ -46,10 +46,17 @@ NOTICE_DURATION = 3
 # Detection settings
 DRAW_POINT_OFFSET = 5  # Pixels below the top line of the bbox
 
-# Frames to hold warnings after the last detection.  Higher values help smooth
-# out intermittent object detection without causing stale alerts.
-PHONE_DEBOUNCE_FRAMES = 30
-SAFE_ZONE_DEBOUNCE_FRAMES = 30
+# Debounce settings
+# Number of frames used to evaluate if a detection is stable.  The detection is
+# considered valid when it appears in at least half of these frames.
+PHONE_SCAN_FRAMES = 30
+SAFE_ZONE_SCAN_FRAMES = 30
+
+# Frames to hold warnings after the detection window triggers.  Typically set to
+# ``SCAN_FRAMES * 2`` to keep the notice visible long enough while smoothing out
+# brief detection gaps.
+PHONE_DEBOUNCE_FRAMES = PHONE_SCAN_FRAMES * 2
+SAFE_ZONE_DEBOUNCE_FRAMES = SAFE_ZONE_SCAN_FRAMES * 2
 
 # Serial command messages
 PHONE_COMMAND = "phone_detected"

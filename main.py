@@ -25,12 +25,15 @@ from utils.defines import (
     DRAW_POINT_OFFSET,
     PHONE_COMMAND,
     BREACH_COMMAND,
+    PHONE_SCAN_FRAMES,
+    SAFE_ZONE_SCAN_FRAMES,
     PHONE_DEBOUNCE_FRAMES,
     SAFE_ZONE_DEBOUNCE_FRAMES,
     CONFIDENCE_THRESHOLD_FACE,
     CONFIDENCE_THRESHOLD_PHONE,
 )
 import time
+from collections import deque
 
 
 def main():
@@ -39,6 +42,8 @@ def main():
     # comm = SerialComm()
     phone_timer = 0
     safe_zone_timer = 0
+    phone_history = deque(maxlen=PHONE_SCAN_FRAMES)
+    safe_history = deque(maxlen=SAFE_ZONE_SCAN_FRAMES)
     prev_time = time.time()
 
     # Start Flask server on a separate thread
@@ -95,26 +100,36 @@ def main():
                     # If no bounds are set, consider all faces as inside
                     any_inside = True
 
-            # Phone detection debounce using a hold timer
-            if phone_present:
-                if phone_timer == 0:
-                    # comm.send(PHONE_COMMAND)
-                    set_notice("Phone detected", "warning")
-                phone_timer = PHONE_DEBOUNCE_FRAMES
+            # Phone detection smoothing using a detection window and hold timer
+            phone_history.append(1 if phone_present else 0)
+            if len(phone_history) == PHONE_SCAN_FRAMES:
+                if sum(phone_history) >= PHONE_SCAN_FRAMES // 2:
+                    if phone_timer == 0:
+                        # comm.send(PHONE_COMMAND)
+                        set_notice("Phone detected", "warning")
+                    phone_timer = PHONE_DEBOUNCE_FRAMES
+                phone_history.clear()
             else:
-                phone_timer = max(phone_timer - 1, 0)
+                if phone_timer > 0 and not phone_present:
+                    phone_timer -= 1
+
             if phone_timer > 0:
                 hold_notice("Phone detected")
             phone_active = phone_timer > 0
 
-            # Safe zone breach debouncing
-            if any_outside:
-                if safe_zone_timer == 0:
-                    # comm.send(BREACH_COMMAND)
-                    set_notice("Return to safe zone", "critical")
-                safe_zone_timer = SAFE_ZONE_DEBOUNCE_FRAMES
+            # Safe zone breach smoothing using detection window and hold timer
+            safe_history.append(1 if any_outside else 0)
+            if len(safe_history) == SAFE_ZONE_SCAN_FRAMES:
+                if sum(safe_history) >= SAFE_ZONE_SCAN_FRAMES // 2:
+                    if safe_zone_timer == 0:
+                        # comm.send(BREACH_COMMAND)
+                        set_notice("Return to safe zone", "critical")
+                    safe_zone_timer = SAFE_ZONE_DEBOUNCE_FRAMES
+                safe_history.clear()
             else:
-                safe_zone_timer = max(safe_zone_timer - 1, 0)
+                if safe_zone_timer > 0 and not any_outside:
+                    safe_zone_timer -= 1
+
             if safe_zone_timer > 0:
                 hold_notice("Return to safe zone")
             breach_active = safe_zone_timer > 0
