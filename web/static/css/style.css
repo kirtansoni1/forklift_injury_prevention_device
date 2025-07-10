@@ -7,7 +7,7 @@ body {
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 2.4em;
     margin-bottom: 0.5em;
     color: var(--primary-color);
 }
@@ -23,6 +23,7 @@ p {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 20px;
 }
 
@@ -30,14 +31,14 @@ p {
 .stream-section {
     flex: 1;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
 }
 
 /* Wrapper for the stream element */
-.stream-section {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.stream-wrapper {
+    position: relative;
+    display: inline-block;
 }
 
 .stream {
@@ -52,11 +53,6 @@ p {
 .stream.alert {
     border-color: var(--alert-color);
     box-shadow: 0 0 80px rgba(255, 82, 82, 0.7);
-}
-
-.stream-wrapper {
-    position: relative;
-    display: inline-block;
 }
 
 #overlay {
@@ -83,13 +79,22 @@ button:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 0 0 320px;
+    width: 100%;
+    max-width: 320px;
 }
 
 .message {
     margin-top: 10px;
     height: 20px;
     color: var(--primary-color);
+}
+
+/* Container for bounds button and its message */
+.bound-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
 }
 
 .indicator-box {
