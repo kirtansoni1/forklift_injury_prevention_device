@@ -12,9 +12,9 @@ FRAME_WIDTH = 320
 FRAME_HEIGHT = 320
 
 # Detection thresholds
-CONFIDENCE_THRESHOLD = 0.2  # General detection confidence threshold
-CONFIDENCE_THRESHOLD_FACE = 0.3
-CONFIDENCE_THRESHOLD_PHONE = 0.65
+CONFIDENCE_THRESHOLD = 0.3  # General detection confidence threshold
+CONFIDENCE_THRESHOLD_FACE = 0.45
+CONFIDENCE_THRESHOLD_PHONE = 0.6
 FACE_CLASS_ID = 0  # 'face'
 PHONE_CLASS_ID = 1  # 'phone'
 
