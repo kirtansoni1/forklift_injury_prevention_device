@@ -41,7 +41,7 @@ UI_ALERT_COLOR = "#ff5252"
 UI_INFO_COLOR = "#42a5f5"
 
 # Notice display duration in seconds
-NOTICE_DURATION = 3
+NOTICE_DURATION = 1
 
 # Detection settings
 DRAW_POINT_OFFSET = 5  # Pixels below the top line of the bbox
