@@ -99,6 +99,14 @@ def set_bounds():
     return jsonify({'status': 'ok'})
 
 
+@app.route('/reset_bounds', methods=['POST'])
+def reset_bounds():
+    """Clear any existing bounding lines."""
+    global _bounds
+    _bounds = None
+    return jsonify({'status': 'ok'})
+
+
 def get_bounds():
     """Return the currently configured bounding lines."""
     return _bounds

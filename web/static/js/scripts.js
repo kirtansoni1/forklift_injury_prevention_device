@@ -34,6 +34,7 @@ btn.addEventListener('click', () => {
     setting = true;
     points = [];
     message.textContent = 'Set the bounding lines by clicking on the camera feed';
+    fetch('/reset_bounds', { method: 'POST' });
     drawLines();
 });
 
