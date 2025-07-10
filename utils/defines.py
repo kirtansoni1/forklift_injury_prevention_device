@@ -49,8 +49,8 @@ DRAW_POINT_OFFSET = 5  # Pixels below the top line of the bbox
 # Number of frames to keep warnings active after the last detection.
 # Both phone detection and safe-zone breach detection use this value to
 # smooth out sporadic results.
-PHONE_SCAN_FRAMES = 30
-SAFE_ZONE_SCAN_FRAMES = 30
+PHONE_DEBOUNCE_FRAMES = 30
+SAFE_ZONE_DEBOUNCE_FRAMES = 30
 
 # Serial command messages
 PHONE_COMMAND = "phone_detected"

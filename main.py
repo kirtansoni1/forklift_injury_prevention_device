@@ -24,8 +24,8 @@ from utils.defines import (
     DRAW_POINT_OFFSET,
     PHONE_COMMAND,
     BREACH_COMMAND,
-    PHONE_SCAN_FRAMES,
-    SAFE_ZONE_SCAN_FRAMES,
+    PHONE_DEBOUNCE_FRAMES,
+    SAFE_ZONE_DEBOUNCE_FRAMES,
     CONFIDENCE_THRESHOLD_FACE,
     CONFIDENCE_THRESHOLD_PHONE,
 )
@@ -96,25 +96,27 @@ def main():
 
             # Phone detection debouncing
             if phone_present:
-                phone_timer = PHONE_SCAN_FRAMES
-                # comm.send(PHONE_COMMAND)
-                set_notice("Phone detected", "warning")
-            elif phone_timer > 0:
-                phone_timer -= 1
-            phone_warning = phone_timer > 0
+                if phone_timer == 0:
+                    # comm.send(PHONE_COMMAND)
+                    set_notice("Phone detected", "warning")
+                phone_timer = PHONE_DEBOUNCE_FRAMES
+            else:
+                phone_timer = max(phone_timer - 1, 0)
+            phone_active = phone_timer > 0
 
             # Safe zone breach debouncing
             if any_outside:
-                safe_zone_timer = SAFE_ZONE_SCAN_FRAMES
-                # comm.send(BREACH_COMMAND)
-                set_notice("Return to safe zone", "critical")
-            elif safe_zone_timer > 0:
-                safe_zone_timer -= 1
-            breach_warning = safe_zone_timer > 0
+                if safe_zone_timer == 0:
+                    # comm.send(BREACH_COMMAND)
+                    set_notice("Return to safe zone", "critical")
+                safe_zone_timer = SAFE_ZONE_DEBOUNCE_FRAMES
+            else:
+                safe_zone_timer = max(safe_zone_timer - 1, 0)
+            breach_active = safe_zone_timer > 0
 
             operator_status = "Not Present"
             if operator_count > 0:
-                if breach_warning:
+                if breach_active:
                     operator_status = "Outside safe zone"
                 elif any_inside or not any_outside:
                     operator_status = "Inside safe zone"
@@ -128,7 +130,7 @@ def main():
                         0.6, FPS_COLOR, 2)
 
             # Update status for UI
-            update_status(phone_warning, operator_status, operator_count, round(fps, 1))
+            update_status(phone_active, operator_status, operator_count, round(fps, 1))
 
             # Update the stream frame for web viewing
             update_frame(frame)
