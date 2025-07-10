@@ -12,6 +12,7 @@ from utils.web_stream import (
     get_bounds,
     update_status,
     set_notice,
+    hold_notice,
 )
 from utils.defines import (
     FACE_CLASS_ID,
@@ -37,6 +38,8 @@ def main():
     camera = CameraStream().start()
     # comm = SerialComm()
     phone_timer = 0
+    phone_scan_total = 0
+    phone_scan_detects = 0
     safe_zone_timer = 0
     prev_time = time.time()
 
@@ -94,14 +97,29 @@ def main():
                     # If no bounds are set, consider all faces as inside
                     any_inside = True
 
-            # Phone detection debouncing
+            # Phone detection majority debounce
             if phone_present:
-                if phone_timer == 0:
-                    # comm.send(PHONE_COMMAND)
-                    set_notice("Phone detected", "warning")
-                phone_timer = PHONE_DEBOUNCE_FRAMES
-            else:
-                phone_timer = max(phone_timer - 1, 0)
+                if phone_scan_total == 0:
+                    phone_scan_total = 1
+                    phone_scan_detects = 1
+                else:
+                    phone_scan_total += 1
+                    phone_scan_detects += 1
+            elif phone_scan_total > 0:
+                phone_scan_total += 1
+
+            if phone_scan_total >= PHONE_SCAN_FRAMES:
+                if phone_scan_detects >= PHONE_SCAN_FRAMES / 2:
+                    if phone_timer == 0:
+                        # comm.send(PHONE_COMMAND)
+                        set_notice("Phone detected", "warning")
+                    phone_timer = PHONE_DEBOUNCE_FRAMES
+                phone_scan_total = 0
+                phone_scan_detects = 0
+
+            if phone_timer > 0:
+                hold_notice("Phone detected")
+                phone_timer -= 1
             phone_active = phone_timer > 0
 
             # Safe zone breach debouncing
@@ -112,6 +130,8 @@ def main():
                 safe_zone_timer = SAFE_ZONE_DEBOUNCE_FRAMES
             else:
                 safe_zone_timer = max(safe_zone_timer - 1, 0)
+            if safe_zone_timer > 0:
+                hold_notice("Return to safe zone")
             breach_active = safe_zone_timer > 0
 
             operator_status = "Not Present"

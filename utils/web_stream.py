@@ -27,6 +27,7 @@ _current_frame = None
 _bounds = None
 _status = {"phone": False, "operator": "Not Present", "count": 0, "fps": 0.0}
 _notice = {"message": "", "level": "info", "time": 0.0}
+_queue = []
 
 
 def update_frame(frame):
@@ -119,16 +120,31 @@ def update_status(phone: bool, operator: str, count: int, fps: float):
 
 
 def set_notice(message: str, level: str = "info"):
-    """Display a transient notice overlay on the web UI."""
+    """Queue a notice to display on the web UI."""
+    global _notice, _queue
+    if not _notice["message"]:
+        _notice = {"message": message, "level": level, "time": time.time()}
+    else:
+        if not _queue or _queue[-1] != (message, level):
+            _queue.append((message, level))
+
+
+def hold_notice(message: str):
+    """Reset expiry timer if the current notice matches the message."""
     global _notice
-    _notice = {"message": message, "level": level, "time": time.time()}
+    if _notice["message"] == message:
+        _notice["time"] = time.time()
 
 
 def get_notice():
     """Return the current notice if not expired."""
-    global _notice
+    global _notice, _queue
     if _notice["message"] and time.time() - _notice["time"] > NOTICE_DURATION:
-        _notice = {"message": "", "level": "info", "time": 0.0}
+        if _queue:
+            msg, lvl = _queue.pop(0)
+            _notice = {"message": msg, "level": lvl, "time": time.time()}
+        else:
+            _notice = {"message": "", "level": "info", "time": 0.0}
     return {"message": _notice["message"], "level": _notice["level"]}
 
 

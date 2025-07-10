@@ -46,10 +46,16 @@ NOTICE_DURATION = 3
 # Detection settings
 DRAW_POINT_OFFSET = 5  # Pixels below the top line of the bbox
 
-# Number of frames to keep warnings active after the last detection.
-# Both phone detection and safe-zone breach detection use this value to
-# smooth out sporadic results.
-PHONE_DEBOUNCE_FRAMES = 30
+# Phone detection scan window. After a phone is first detected the system
+# samples the next N frames and requires at least half of them to contain a
+# phone before confirming detection.
+PHONE_SCAN_FRAMES = 30
+
+# Number of frames to keep warnings active after confirmation. The default is
+# twice the scan window for noticeable but not overly long alerts.
+PHONE_DEBOUNCE_FRAMES = PHONE_SCAN_FRAMES * 2
+
+# Safe-zone breach warning duration in frames.
 SAFE_ZONE_DEBOUNCE_FRAMES = 30
 
 # Serial command messages
