@@ -3,7 +3,10 @@
 
 <head>
     <meta charset="UTF-8">
+    <!-- Make the page responsive on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forklift Injury Prevention Device</title>
+    <!-- Pass dynamic colors from Flask -->
     <style>
         :root {
             --primary-color: {{ primary_color }};
@@ -16,21 +19,45 @@
 
 <body>
     <h1>Forklift Injury Prevention Device Live Stream</h1>
-    <p>Streaming from Raspberry Pi</p>
-    <div class="stream-container">
-        <div class="stream-wrapper">
-            <img id="stream" class="stream" src="/video_feed" alt="Live Stream Unavailable">
-            <canvas id="overlay"></canvas>
-            <div id="notices" class="notice-container"></div>
+    <div class="page-container">
+        <!-- Left side stream section -->
+        <div class="stream-section">
+            <div class="stream-wrapper">
+                <img id="stream" class="stream" src="/video_feed" alt="Live Stream Unavailable">
+                <canvas id="overlay"></canvas>
+                <div id="notices" class="notice-container"></div>
+            </div>
+        </div>
+
+        <!-- Right side controls and settings -->
+        <div class="control-section">
+            <p>Streaming from Raspberry Pi</p>
+
+            <!-- Indicator labels shown in a rounded container -->
+            <div class="indicator-box">
+                <div id="phoneLabel" class="indicator">Phone Detected: No</div>
+                <div id="operatorLabel" class="indicator">Operator: Not Present</div>
+                <div id="countLabel" class="indicator">Number of Operator: 0</div>
+            </div>
+
+            <button id="setBoundsBtn">SET BOUNDS</button>
+            <div id="message" class="message"></div>
+
+            <!-- Placeholder sensor threshold inputs -->
+            <div class="sensor-form">
+                <label for="topSensor">Top Sensor Threshold</label>
+                <input type="number" id="topSensor" />
+
+                <label for="leftSensor">Left Sensor Threshold</label>
+                <input type="number" id="leftSensor" />
+
+                <label for="rightSensor">Right Sensor Threshold</label>
+                <input type="number" id="rightSensor" />
+
+                <button type="button" id="sendSensorBtn">Send</button>
+            </div>
         </div>
     </div>
-    <div class="indicator-container">
-        <div id="phoneLabel" class="indicator">Phone Detected: No</div>
-        <div id="operatorLabel" class="indicator">Operator: Not Present</div>
-        <div id="countLabel" class="indicator">Number of Operator: 0</div>
-    </div>
-    <button id="setBoundsBtn">SET BOUNDS</button>
-    <div id="message" class="message"></div>
 
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
