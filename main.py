@@ -24,9 +24,10 @@ from utils.defines import (
     DRAW_POINT_OFFSET,
     PHONE_COMMAND,
     BREACH_COMMAND,
-    PHONE_DETECT_FRAMES,
+    PHONE_SCAN_FRAMES,
+    SAFE_ZONE_SCAN_FRAMES,
     CONFIDENCE_THRESHOLD_FACE,
-    CONFIDENCE_THRESHOLD_PHONE
+    CONFIDENCE_THRESHOLD_PHONE,
 )
 import time
 
@@ -35,9 +36,8 @@ def main():
     detector = AIDetector()
     camera = CameraStream().start()
     # comm = SerialComm()
-    face_was_safe = False
-    phone_frames = 0
-    phone_detections = 0
+    phone_timer = 0
+    safe_zone_timer = 0
     prev_time = time.time()
 
     # Start Flask server on a separate thread
@@ -94,42 +94,41 @@ def main():
                     # If no bounds are set, consider all faces as inside
                     any_inside = True
 
-            # Phone detection majority check
+            # Phone detection debouncing
             if phone_present:
-                phone_detections += 1
-            phone_frames += 1
-            if phone_frames >= PHONE_DETECT_FRAMES:
-                if phone_detections > PHONE_DETECT_FRAMES / 2:
-                    # comm.send(PHONE_COMMAND)
-                    set_notice("Phone detected", "warning")
-                phone_frames = 0
-                phone_detections = 0
+                phone_timer = PHONE_SCAN_FRAMES
+                # comm.send(PHONE_COMMAND)
+                set_notice("Phone detected", "warning")
+            elif phone_timer > 0:
+                phone_timer -= 1
+            phone_warning = phone_timer > 0
+
+            # Safe zone breach debouncing
+            if any_outside:
+                safe_zone_timer = SAFE_ZONE_SCAN_FRAMES
+                # comm.send(BREACH_COMMAND)
+                set_notice("Return to safe zone", "critical")
+            elif safe_zone_timer > 0:
+                safe_zone_timer -= 1
+            breach_warning = safe_zone_timer > 0
 
             operator_status = "Not Present"
             if operator_count > 0:
-                if any_outside:
+                if breach_warning:
                     operator_status = "Outside safe zone"
-                    # comm.send(BREACH_COMMAND)
-                    set_notice("Return to safe zone", "critical")
-                    update_status(phone_present, operator_status, operator_count,
-                                  round(fps, 1))  # Update status immediately
-                elif any_inside:
+                elif any_inside or not any_outside:
                     operator_status = "Inside safe zone"
 
             if operator_count > 1:
                 set_notice("Too many operators", "warning")
 
-            if bounds is not None and any_outside and face_was_safe:
-                face_was_safe = False
-            elif any_inside:
-                face_was_safe = True
 
             # Draw FPS on frame
             cv2.putText(frame, f"FPS: {fps:.1f}", (10, 20), cv2.FONT_HERSHEY_SIMPLEX,
                         0.6, FPS_COLOR, 2)
 
             # Update status for UI
-            update_status(phone_present, operator_status, operator_count, round(fps, 1))
+            update_status(phone_warning, operator_status, operator_count, round(fps, 1))
 
             # Update the stream frame for web viewing
             update_frame(frame)
