@@ -8,7 +8,7 @@ const btn = document.getElementById('setBoundsBtn');
 const phoneLabel = document.getElementById('phoneLabel');
 const operatorLabel = document.getElementById('operatorLabel');
 const countLabel = document.getElementById('countLabel');
-const noticeBox = document.getElementById('notice');
+const noticeBox = document.getElementById('notices');
 
 let setting = false;
 let points = [];
@@ -81,10 +81,16 @@ function pollStatus() {
                 stream.classList.remove('alert');
             }
 
-            if (data.notice && data.notice.message) {
-                noticeBox.textContent = data.notice.message;
-                noticeBox.className = 'notice ' + data.notice.level;
-                noticeBox.style.display = 'block';
+            noticeBox.innerHTML = '';
+            if (data.notices && data.notices.length) {
+                data.notices.forEach(n => {
+                    const div = document.createElement('div');
+                    div.className = 'notice ' + n.level;
+                    div.textContent = n.message;
+                    div.style.display = 'block';
+                    noticeBox.appendChild(div);
+                });
+                noticeBox.style.display = 'flex';
             } else {
                 noticeBox.style.display = 'none';
             }

@@ -38,8 +38,6 @@ def main():
     camera = CameraStream().start()
     # comm = SerialComm()
     phone_timer = 0
-    phone_scan_total = 0
-    phone_scan_detects = 0
     safe_zone_timer = 0
     prev_time = time.time()
 
@@ -97,29 +95,16 @@ def main():
                     # If no bounds are set, consider all faces as inside
                     any_inside = True
 
-            # Phone detection majority debounce
+            # Phone detection debounce using a hold timer
             if phone_present:
-                if phone_scan_total == 0:
-                    phone_scan_total = 1
-                    phone_scan_detects = 1
-                else:
-                    phone_scan_total += 1
-                    phone_scan_detects += 1
-            elif phone_scan_total > 0:
-                phone_scan_total += 1
-
-            if phone_scan_total >= PHONE_SCAN_FRAMES:
-                if phone_scan_detects >= PHONE_SCAN_FRAMES / 2:
-                    if phone_timer == 0:
-                        # comm.send(PHONE_COMMAND)
-                        set_notice("Phone detected", "warning")
-                    phone_timer = PHONE_DEBOUNCE_FRAMES
-                phone_scan_total = 0
-                phone_scan_detects = 0
-
+                if phone_timer == 0:
+                    # comm.send(PHONE_COMMAND)
+                    set_notice("Phone detected", "warning")
+                phone_timer = PHONE_DEBOUNCE_FRAMES
+            else:
+                phone_timer = max(phone_timer - 1, 0)
             if phone_timer > 0:
                 hold_notice("Phone detected")
-                phone_timer -= 1
             phone_active = phone_timer > 0
 
             # Safe zone breach debouncing

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, Response, render_template, request, jsonify
-from flask import Flask, Response, render_template, request, jsonify
 import cv2
 import threading
 import time
@@ -26,8 +25,7 @@ _lock = threading.Lock()
 _current_frame = None
 _bounds = None
 _status = {"phone": False, "operator": "Not Present", "count": 0, "fps": 0.0}
-_notice = {"message": "", "level": "info", "time": 0.0}
-_queue = []
+_notices = []  # list of {"message": str, "level": str, "time": float}
 
 
 def update_frame(frame):
@@ -120,38 +118,37 @@ def update_status(phone: bool, operator: str, count: int, fps: float):
 
 
 def set_notice(message: str, level: str = "info"):
-    """Queue a notice to display on the web UI."""
-    global _notice, _queue
-    if not _notice["message"]:
-        _notice = {"message": message, "level": level, "time": time.time()}
+    """Add or refresh a notice to display on the web UI."""
+    global _notices
+    for notice in _notices:
+        if notice["message"] == message:
+            notice.update(level=level, time=time.time())
+            break
     else:
-        if not _queue or _queue[-1] != (message, level):
-            _queue.append((message, level))
+        _notices.append({"message": message, "level": level, "time": time.time()})
 
 
 def hold_notice(message: str):
-    """Reset expiry timer if the current notice matches the message."""
-    global _notice
-    if _notice["message"] == message:
-        _notice["time"] = time.time()
+    """Refresh the expiry timer for a specific notice."""
+    global _notices
+    for notice in _notices:
+        if notice["message"] == message:
+            notice["time"] = time.time()
+            break
 
 
-def get_notice():
-    """Return the current notice if not expired."""
-    global _notice, _queue
-    if _notice["message"] and time.time() - _notice["time"] > NOTICE_DURATION:
-        if _queue:
-            msg, lvl = _queue.pop(0)
-            _notice = {"message": msg, "level": lvl, "time": time.time()}
-        else:
-            _notice = {"message": "", "level": "info", "time": 0.0}
-    return {"message": _notice["message"], "level": _notice["level"]}
+def get_notices():
+    """Return all active notices and purge expired ones."""
+    global _notices
+    now = time.time()
+    _notices = [n for n in _notices if now - n["time"] <= NOTICE_DURATION]
+    return [{"message": n["message"], "level": n["level"]} for n in _notices]
 
 
 @app.route('/status')
 def status():
     """Provide detection status for the web UI."""
-    return jsonify({**_status, "notice": get_notice()})
+    return jsonify({**_status, "notices": get_notices()})
 
 
 def start_web_streaming():
