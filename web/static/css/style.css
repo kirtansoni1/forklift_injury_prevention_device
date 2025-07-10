@@ -7,9 +7,29 @@ body {
 }
 
 h1 {
+    position: relative;
     font-size: 2.4em;
-    margin-bottom: 0.5em;
+    margin: 0 0 10px 0;
     color: var(--primary-color);
+    padding: 0.3em 0;
+}
+
+h1::before,
+h1::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 45%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+h1::before {
+    left: 0;
+}
+
+h1::after {
+    right: 0;
 }
 
 p {
@@ -25,6 +45,10 @@ p {
     align-items: center;
     justify-content: center;
     gap: 20px;
+    margin-top: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Section containing the video feed */
@@ -80,13 +104,23 @@ button:hover {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    max-width: 320px;
+    max-width: 380px;
+    background-color: #1a1a1a;
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 .message {
     margin-top: 10px;
-    height: 20px;
+    height: 24px;
     color: var(--primary-color);
+    font-size: 1.1em;
+}
+
+#setBoundsBtn {
+    padding: 14px 30px;
+    font-size: 1.1em;
 }
 
 /* Container for bounds button and its message */
@@ -164,9 +198,11 @@ button:hover {
     .page-container {
         flex-direction: row;
         align-items: flex-start;
+        justify-content: center;
+        gap: 40px;
     }
 
     .control-section {
-        margin-left: 20px;
+        margin-left: 0;
     }
 }
