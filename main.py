@@ -12,6 +12,7 @@ from utils.web_stream import (
     get_bounds,
     update_status,
     set_notice,
+    hold_notice,
 )
 from utils.defines import (
     FACE_CLASS_ID,
@@ -24,20 +25,25 @@ from utils.defines import (
     DRAW_POINT_OFFSET,
     PHONE_COMMAND,
     BREACH_COMMAND,
-    PHONE_DETECT_FRAMES,
+    PHONE_SCAN_FRAMES,
+    SAFE_ZONE_SCAN_FRAMES,
+    PHONE_DEBOUNCE_FRAMES,
+    SAFE_ZONE_DEBOUNCE_FRAMES,
     CONFIDENCE_THRESHOLD_FACE,
-    CONFIDENCE_THRESHOLD_PHONE
+    CONFIDENCE_THRESHOLD_PHONE,
 )
 import time
+from collections import deque
 
 
 def main():
     detector = AIDetector()
     camera = CameraStream().start()
     # comm = SerialComm()
-    face_was_safe = False
-    phone_frames = 0
-    phone_detections = 0
+    phone_timer = 0
+    safe_zone_timer = 0
+    phone_history = deque(maxlen=PHONE_SCAN_FRAMES)
+    safe_history = deque(maxlen=SAFE_ZONE_SCAN_FRAMES)
     prev_time = time.time()
 
     # Start Flask server on a separate thread
@@ -94,42 +100,57 @@ def main():
                     # If no bounds are set, consider all faces as inside
                     any_inside = True
 
-            # Phone detection majority check
-            if phone_present:
-                phone_detections += 1
-            phone_frames += 1
-            if phone_frames >= PHONE_DETECT_FRAMES:
-                if phone_detections > PHONE_DETECT_FRAMES / 2:
-                    # comm.send(PHONE_COMMAND)
-                    set_notice("Phone detected", "warning")
-                phone_frames = 0
-                phone_detections = 0
+            # Phone detection smoothing using a detection window and hold timer
+            phone_history.append(1 if phone_present else 0)
+            if len(phone_history) == PHONE_SCAN_FRAMES:
+                if sum(phone_history) >= PHONE_SCAN_FRAMES // 2:
+                    if phone_timer == 0:
+                        # comm.send(PHONE_COMMAND)
+                        set_notice("Phone detected", "warning")
+                    phone_timer = PHONE_DEBOUNCE_FRAMES
+                phone_history.clear()
+            else:
+                if phone_timer > 0 and not phone_present:
+                    phone_timer -= 1
+
+            if phone_timer > 0:
+                hold_notice("Phone detected")
+            phone_active = phone_timer > 0
+
+            # Safe zone breach smoothing using detection window and hold timer
+            safe_history.append(1 if any_outside else 0)
+            if len(safe_history) == SAFE_ZONE_SCAN_FRAMES:
+                if sum(safe_history) >= SAFE_ZONE_SCAN_FRAMES // 2:
+                    if safe_zone_timer == 0:
+                        # comm.send(BREACH_COMMAND)
+                        set_notice("Return to safe zone", "critical")
+                    safe_zone_timer = SAFE_ZONE_DEBOUNCE_FRAMES
+                safe_history.clear()
+            else:
+                if safe_zone_timer > 0 and not any_outside:
+                    safe_zone_timer -= 1
+
+            if safe_zone_timer > 0:
+                hold_notice("Return to safe zone")
+            breach_active = safe_zone_timer > 0
 
             operator_status = "Not Present"
             if operator_count > 0:
-                if any_outside:
+                if breach_active:
                     operator_status = "Outside safe zone"
-                    # comm.send(BREACH_COMMAND)
-                    set_notice("Return to safe zone", "critical")
-                    update_status(phone_present, operator_status, operator_count,
-                                  round(fps, 1))  # Update status immediately
-                elif any_inside:
+                elif any_inside or not any_outside:
                     operator_status = "Inside safe zone"
 
             if operator_count > 1:
                 set_notice("Too many operators", "warning")
 
-            if bounds is not None and any_outside and face_was_safe:
-                face_was_safe = False
-            elif any_inside:
-                face_was_safe = True
 
             # Draw FPS on frame
             cv2.putText(frame, f"FPS: {fps:.1f}", (10, 20), cv2.FONT_HERSHEY_SIMPLEX,
                         0.6, FPS_COLOR, 2)
 
             # Update status for UI
-            update_status(phone_present, operator_status, operator_count, round(fps, 1))
+            update_status(phone_active, operator_status, operator_count, round(fps, 1))
 
             # Update the stream frame for web viewing
             update_frame(frame)
