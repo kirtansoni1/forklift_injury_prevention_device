@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""Simple USB camera test utility.
+
+Run this script to verify that OpenCV can access your camera and display frames
+in real time.
+
+Author: Kirtan Soni
+"""
+
 import os
 import cv2
 import time

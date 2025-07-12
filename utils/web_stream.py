@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""Flask based web streaming interface.
+
+This module exposes helper functions used by :mod:`main` to provide a live video
+feed and status information through a browser.
+
+Author: Kirtan Soni
+"""
+
 from flask import Flask, Response, render_template, request, jsonify
 import cv2
 import threading

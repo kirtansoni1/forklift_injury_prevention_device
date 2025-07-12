@@ -1,3 +1,11 @@
+"""Create train/val/test splits from a folder of images and labels.
+
+Configure ``INPUT_DIR`` and ``OUTPUT_DIR`` then run the script to generate
+separate split directories according to ``SPLIT_RATIO``.
+
+Author: Kirtan Soni
+"""
+
 import os
 import shutil
 import random

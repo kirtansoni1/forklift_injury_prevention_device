@@ -1,5 +1,19 @@
 # -*- coding: utf-8 -*-
 
+"""Main application entry point.
+
+This script initializes the camera, AI detector and web server to provide a
+real-time view of the forklift area. Detected faces and phone usage are
+highlighted on the stream and notices are exposed through a small Flask
+interface.
+
+Run this script with Python 3.11 after installing the requirements::
+
+    python main.py
+
+Author: Kirtan Soni
+"""
+
 import cv2
 from threading import Thread
 from utils.camera_stream import CameraStream

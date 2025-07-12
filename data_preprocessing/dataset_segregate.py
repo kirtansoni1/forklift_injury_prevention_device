@@ -1,3 +1,12 @@
+"""Split a dataset into folders based on label combinations.
+
+Each image is moved to ``class_<ids>`` depending on which class IDs are present
+in its label file. Adjust ``INPUT_DATASET_DIR`` and ``OUTPUT_BASE_DIR`` before
+running ``python dataset_segregate.py``.
+
+Author: Kirtan Soni
+"""
+
 import os
 import shutil
 from pathlib import Path

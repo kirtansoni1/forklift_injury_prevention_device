@@ -1,5 +1,14 @@
 # -*- coding: utf-8 -*-
 
+"""Wrapper around the Ultralytics YOLO model.
+
+This module loads the NCNN converted model and exposes a ``AIDetector`` class
+with a ``detect_humans`` method returning bounding boxes for faces and phone
+usage.
+
+Author: Kirtan Soni
+"""
+
 import sys
 sys.path.append('.')  # noqa
 

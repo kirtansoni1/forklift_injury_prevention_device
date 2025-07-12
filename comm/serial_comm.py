@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""Serial communication helper for the ESP32 module.
+
+The :class:`SerialComm` class abstracts sending and receiving messages over the
+configured UART port.
+
+Author: Kirtan Soni
+"""
+
 import serial
 import threading
 import sys
