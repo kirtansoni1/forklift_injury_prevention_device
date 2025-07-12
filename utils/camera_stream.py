@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""Threaded camera stream wrapper.
+
+This utility starts capturing frames from the configured camera index on a
+separate thread so the main application can consume frames without blocking.
+
+Author: Kirtan Soni
+"""
+
 import os
 import cv2
 import threading

@@ -1,3 +1,11 @@
+"""Utility to replace class IDs in YOLO label files.
+
+Configure ``INPUT_FOLDER`` to point at a dataset and set ``OLD_CLASS`` and
+``NEW_CLASS`` to remap labels. Run with ``python dataset_change_class.py``.
+
+Author: Kirtan Soni
+"""
+
 import os
 from pathlib import Path
 

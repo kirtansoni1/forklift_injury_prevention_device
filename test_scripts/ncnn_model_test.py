@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-"""
-This script tests the AIDetector class for human detection using a sample image.
-It loads an image, runs the detector, and displays the results with bounding boxes and confidence scores.
+"""Test the :class:`AIDetector` using a sample image.
+
+Run ``python ncnn_model_test.py`` to load ``test_images/sample1.jpg`` and display
+the detection results.
+
+Author: Kirtan Soni
 """
 import cv2
 import sys

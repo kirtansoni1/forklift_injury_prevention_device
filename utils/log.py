@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-"""
-Simple logging utility with timestamped output.
+"""Simple logging utility with timestamped output.
+
+Author: Kirtan Soni
 """
 import logging
 from datetime import datetime

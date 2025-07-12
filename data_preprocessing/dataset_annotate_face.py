@@ -1,3 +1,14 @@
+"""Annotate faces in an existing YOLO dataset.
+
+The script runs a YOLO model over every image and appends missing face labels to
+the existing annotations. Useful for quickly bootstrapping face data.
+
+Run ``python dataset_annotate_face.py`` after adjusting the configuration
+constants at the top of the file.
+
+Author: Kirtan Soni
+"""
+
 import os
 from pathlib import Path
 import cv2
