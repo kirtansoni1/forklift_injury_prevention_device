@@ -1,7 +1,10 @@
 #include <main.h>
 
-SparkFun_VL53L5CX myImager;
-VL53L5CX_ResultsData measurementData;
+SparkFun_VL53L5CX imagers[NUM_SENSORS];
+VL53L5CX_ResultsData measurementData[NUM_SENSORS];
+
+const char *sensorNames[NUM_SENSORS] = {"TOP", "LEFT", "RIGHT"};
+const uint8_t sensorAddrs[NUM_SENSORS] = {VL53L5CX_ADDR_TOP, VL53L5CX_ADDR_LEFT, VL53L5CX_ADDR_RIGHT};
 
 int imageResolution = 0;
 int imageWidth = 0;
@@ -16,128 +19,131 @@ void setup()
 
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN, I2C_FREQUENCY_HZ);
 
-  Serial.print(F("Initializing VL53L5CX at address 0x"));
-  Serial.println(VL53L5CX_I2C_ADDR, HEX);
-
-  if (!myImager.begin(VL53L5CX_I2C_ADDR, Wire))
+  for (int i = 0; i < NUM_SENSORS; i++)
   {
-    Serial.println(F("❌ Sensor not detected. Check wiring and power."));
-    while (1)
-      ;
+    Serial.print(F("Initializing "));
+    Serial.print(sensorNames[i]);
+    Serial.print(F(" sensor at address 0x"));
+    Serial.println(sensorAddrs[i], HEX);
+
+    if (!imagers[i].begin(sensorAddrs[i], Wire))
+    {
+      Serial.print(F("❌ Sensor not detected: "));
+      Serial.println(sensorNames[i]);
+      while (1)
+        ;
+    }
+
+    imagers[i].setResolution(GRID_RESOLUTION);
+
+    if (!imagers[i].isConnected())
+    {
+      Serial.print(F("❌ Sensor disconnected after init: "));
+      Serial.println(sensorNames[i]);
+      while (1)
+        ;
+    }
+
+    if (!imagers[i].setRangingMode(RANGING_MODE))
+    {
+      Serial.print(F("❌ Failed to set ranging mode for "));
+      Serial.println(sensorNames[i]);
+      while (1)
+        ;
+    }
+
+    imagers[i].setPowerMode(SF_VL53L5CX_POWER_MODE::SLEEP);
+    delay(500);
+    imagers[i].setPowerMode(SF_VL53L5CX_POWER_MODE::WAKEUP);
+
+    if (!imagers[i].setIntegrationTime(INTEGRATION_TIME_MS))
+    {
+      Serial.print(F("❌ Failed to set integration time for "));
+      Serial.println(sensorNames[i]);
+      while (1)
+        ;
+    }
+
+    if (!imagers[i].setSharpenerPercent(SHARPENER_PERCENT))
+    {
+      Serial.print(F("❌ Failed to set sharpener value for "));
+      Serial.println(sensorNames[i]);
+      while (1)
+        ;
+    }
+
+    if (!imagers[i].setTargetOrder(TARGET_ORDER))
+    {
+      Serial.print(F("❌ Failed to set target order for "));
+      Serial.println(sensorNames[i]);
+      while (1)
+        ;
+    }
+
+    imagers[i].setRangingFrequency(RANGING_FREQUENCY_HZ);
+
+    if (ENABLE_START_RANGING)
+    {
+      if (!imagers[i].startRanging())
+      {
+        Serial.print(F("❌ Failed to start ranging for "));
+        Serial.println(sensorNames[i]);
+        while (1)
+          ;
+      }
+    }
   }
 
-  // Resolution setup
-  myImager.setResolution(GRID_RESOLUTION);
-  imageResolution = myImager.getResolution();
+  imageResolution = imagers[0].getResolution();
   imageWidth = sqrt(imageResolution);
   Serial.print(F("✅ Resolution set: "));
   Serial.print(imageWidth);
   Serial.println("x" + String(imageWidth));
 
-  // Confirm sensor connectivity
-  if (!myImager.isConnected())
-  {
-    Serial.println(F("❌ Sensor disconnected after init."));
-    while (1)
-      ;
-  }
-
-  // Ranging Mode: CONTINUOUS or AUTONOMOUS
-  if (!myImager.setRangingMode(RANGING_MODE))
-  {
-    Serial.println(F("❌ Failed to set ranging mode."));
-    while (1)
-      ;
-  }
-
-  // Power Mode: sleep → wakeup
-  myImager.setPowerMode(SF_VL53L5CX_POWER_MODE::SLEEP);
-  delay(500);
-  myImager.setPowerMode(SF_VL53L5CX_POWER_MODE::WAKEUP);
-
-  // Integration Time
-  if (!myImager.setIntegrationTime(INTEGRATION_TIME_MS))
-  {
-    Serial.println(F("❌ Failed to set integration time."));
-    while (1)
-      ;
-  }
-  Serial.print(F("✅ Integration time set to "));
-  Serial.print(INTEGRATION_TIME_MS);
-  Serial.println(F("ms"));
-
-  // Sharpener
-  if (!myImager.setSharpenerPercent(SHARPENER_PERCENT))
-  {
-    Serial.println(F("❌ Failed to set sharpener value."));
-    while (1)
-      ;
-  }
-  Serial.print(F("✅ Sharpener set to "));
-  Serial.print(SHARPENER_PERCENT);
-  Serial.println(F("%"));
-
-  // Target Order
-  if (!myImager.setTargetOrder(TARGET_ORDER))
-  {
-    Serial.println(F("❌ Failed to set target order."));
-    while (1)
-      ;
-  }
-  Serial.print(F("✅ Target order set to: "));
-  Serial.println((TARGET_ORDER == SF_VL53L5CX_TARGET_ORDER::CLOSEST) ? "CLOSEST" : "STRONGEST");
-
-  // Ranging Frequency
-  myImager.setRangingFrequency(RANGING_FREQUENCY_HZ);
-  Serial.print(F("✅ Ranging frequency: "));
-  Serial.print(RANGING_FREQUENCY_HZ);
-  Serial.println(" Hz");
-
-  // Start Ranging
-  if (ENABLE_START_RANGING)
-  {
-    if (!myImager.startRanging())
-    {
-      Serial.println(F("❌ Failed to start ranging."));
-      while (1)
-        ;
-    }
-    Serial.println(F("📡 Ranging started."));
-  }
+  Serial.println(F("📡 Ranging started on all sensors."));
 }
 
 void loop()
 {
-  // Poll for new data
-  if (myImager.isDataReady())
-  {
-    if (myImager.getRangingData(&measurementData))
-    {
-      Serial.println("==== Distance Grid (mm) ====");
+  bool ready = true;
+  for (int i = 0; i < NUM_SENSORS; i++)
+    ready &= imagers[i].isDataReady();
 
-      // Print in matrix format, reverse X to match real layout
-      for (int y = 0; y <= imageWidth * (imageWidth - 1); y += imageWidth)
+  if (ready)
+  {
+    for (int i = 0; i < NUM_SENSORS; i++)
+      imagers[i].getRangingData(&measurementData[i]);
+
+    Serial.println("==== Distance Grid (mm) ====");
+    Serial.println("TOP\t\t\t\t| LEFT\t\t\t\t| RIGHT");
+
+    for (int y = 0; y <= imageWidth * (imageWidth - 1); y += imageWidth)
+    {
+      for (int s = 0; s < NUM_SENSORS; s++)
       {
         for (int x = imageWidth - 1; x >= 0; x--)
         {
-          uint16_t dist = measurementData.distance_mm[x + y];
+          uint16_t dist = measurementData[s].distance_mm[x + y];
           if (dist == 0 || dist > MAX_DISTANCE_MM)
             Serial.print("----\t");
           else
             Serial.print(String(dist) + "\t");
         }
-        Serial.println();
+        if (s < NUM_SENSORS - 1)
+          Serial.print("| ");
       }
+      Serial.println();
+    }
 
-      Serial.println("============================\n");
+    Serial.println("============================\n");
 
-      if (ENABLE_STOP_AFTER_ONE)
-      {
-        myImager.stopRanging();
-        Serial.println(F("🛑 Ranging stopped."));
-        while (1)
-          ;
-      }
+    if (ENABLE_STOP_AFTER_ONE)
+    {
+      for (int i = 0; i < NUM_SENSORS; i++)
+        imagers[i].stopRanging();
+      Serial.println(F("🛑 Ranging stopped."));
+      while (1)
+        ;
     }
   }
 

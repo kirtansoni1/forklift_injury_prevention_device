@@ -8,8 +8,12 @@
 #define I2C_SCL_PIN 10           // GPIO10 as SCL
 #define I2C_FREQUENCY_HZ 1000000 // Max supported I2C speed for VL53L5CX
 
-// Sensor I²C Address
-#define VL53L5CX_I2C_ADDR 0x29
+// Sensor I²C Addresses
+#define VL53L5CX_ADDR_TOP 0x29
+#define VL53L5CX_ADDR_LEFT 0x2A
+#define VL53L5CX_ADDR_RIGHT 0x2B
+
+#define NUM_SENSORS 3
 
 // Grid resolution: choose 4x4 (16 zones) or 8x8 (64 zones)
 #define GRID_RESOLUTION VL53L5CX_RESOLUTION_8X8
