@@ -247,7 +247,7 @@ void SensorManager::processSensorData()
             {
                 if (sensors[i]->sensor->getRangingData(sensors[i]->data))
                 {
-                    printSensorMatrix(sensors[i]->name, *sensors[i]->data, i + 1);
+                    // printSensorMatrix(sensors[i]->name, *sensors[i]->data, i + 1);
                 }
                 else
                 {

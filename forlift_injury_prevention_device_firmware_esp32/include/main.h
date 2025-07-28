@@ -8,6 +8,7 @@
 
 #include "defines.h"
 #include "sensor_manager.h"
+#include "safety_detector.h"
 
 // =======================[ GLOBAL SENSOR INSTANCES ]===================
 extern SparkFun_VL53L5CX sensorTop;
@@ -31,5 +32,11 @@ bool setupSensors();
 
 // Main application loop
 void processAllSensors();
+
+// Safety system utilities
+void updateSafetyThresholds(uint16_t topThreshold, uint16_t leftThreshold, uint16_t rightThreshold);
+void manualEmergencyOverride(bool activate);
+bool isSafetyTriggered();
+void printSystemStatus();
 
 #endif // MAIN_H

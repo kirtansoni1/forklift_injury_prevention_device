@@ -79,6 +79,9 @@ bool setupSensors()
   // Run diagnostic to check sensor status
   SensorManager::diagnosticSensorStatus();
 
+  // Initialize safety detection system
+  SafetyDetector::initialize();
+
   Serial.println("✅ System initialization complete");
   Serial.println("========================================");
   return true;
@@ -86,7 +89,19 @@ bool setupSensors()
 
 void processAllSensors()
 {
+  // Update sensor data first
   SensorManager::processSensorData();
+
+  // Process safety detection with all three sensors
+  bool emergencyTriggered = SafetyDetector::processAllSensors(dataTop, dataLeft, dataRight);
+
+  // Optional: Print emergency status periodically
+  static uint32_t lastEmergencyPrint = 0;
+  if (emergencyTriggered && (millis() - lastEmergencyPrint > 2000))
+  {
+    Serial.println("⚠️ EMERGENCY STOP ACTIVE - Platform movement restricted");
+    lastEmergencyPrint = millis();
+  }
 }
 
 // =======================[ ARDUINO MAIN FUNCTIONS ]======================
@@ -115,4 +130,53 @@ void loop()
 {
   processAllSensors();
   delay(LOOP_DELAY_MS);
+}
+
+// =======================[ UTILITY FUNCTIONS ]===========================
+/**
+ * @brief Update safety thresholds at runtime
+ * @param topThreshold Top sensor threshold in mm
+ * @param leftThreshold Left sensor threshold in mm
+ * @param rightThreshold Right sensor threshold in mm
+ */
+void updateSafetyThresholds(uint16_t topThreshold, uint16_t leftThreshold, uint16_t rightThreshold)
+{
+  SafetyDetector::updateThresholds(topThreshold, leftThreshold, rightThreshold);
+}
+
+/**
+ * @brief Manual emergency stop override (for testing)
+ * @param activate true to activate emergency stop, false to deactivate
+ */
+void manualEmergencyOverride(bool activate)
+{
+  SafetyDetector::controlSafetyRelays(activate);
+  Serial.print("🔧 Manual override: Emergency stop ");
+  Serial.println(activate ? "ACTIVATED" : "DEACTIVATED");
+}
+
+/**
+ * @brief Get current safety status for external systems
+ * @return true if emergency stop is active
+ */
+bool isSafetyTriggered()
+{
+  return SafetyDetector::isEmergencyStopActive();
+}
+
+/**
+ * @brief Print comprehensive system status
+ */
+void printSystemStatus()
+{
+  Serial.println("📊 SYSTEM STATUS REPORT");
+  Serial.println("=======================");
+
+  // Print sensor diagnostics
+  SensorManager::diagnosticSensorStatus();
+
+  // Print safety status
+  SafetyDetector::printSafetyStatus();
+
+  Serial.println("=======================");
 }

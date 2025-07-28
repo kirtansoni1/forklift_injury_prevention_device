@@ -1,14 +1,30 @@
 // =======================[ SYSTEM CONFIGURATION ]=========================
 #define SERIAL_BAUD_RATE 115200 // Serial communication speed
-#define LOOP_DELAY_MS 50        // Main loop delay (faster response)
-#define INIT_TIMEOUT_MS 15000   // Initialization timeout (increased)
+#define LOOP_DELAY_MS 10        // Main loop delay (faster response)
+                                // 📖 TUNING GUIDE: Critical real-time parameter!
+                                //    Lower (20-30ms) = faster response, higher CPU usage
+                                //    Higher (100-200ms) = slower response, lower CPU usage
+                                //    50ms = ~20Hz update rate, good balance for safety systems
+                                // 📍 CONFIG GUIDE: See DETECTION_PARAMETERS_GUIDE.md
+
+#define INIT_TIMEOUT_MS 15000 // Initialization timeout (increased)
 // ======================================================================
 
 // =======================[ I2C CONFIGURATION ]===========================
 #define I2C_SDA_PIN 4           // GPIO4 as SDA
 #define I2C_SCL_PIN 5           // GPIO5 as SCL
-#define I2C_FREQUENCY_HZ 100000 // Reduced to 100kHz for stability
-#define I2C_TIMEOUT_MS 50       // Reduced timeout for faster recovery
+#define I2C_FREQUENCY_HZ 850000 // Reduced to 850kHz for stability
+                                // 📖 TUNING GUIDE: Communication reliability vs speed
+                                //    400kHz = stable, good for 3 sensors
+                                //    800kHz = faster but may cause communication errors
+                                //    Lower if experiencing I2C timeouts or errors
+                                // 📍 CONFIG GUIDE: See DETECTION_PARAMETERS_GUIDE.md
+
+#define I2C_TIMEOUT_MS 50 // Reduced timeout for faster recovery
+                          // 📖 TUNING GUIDE: Error recovery vs reliability
+                          //    Lower (30-40ms) = faster recovery from errors
+                          //    Higher (100-200ms) = more tolerance for slow sensors
+                          // 📍 CONFIG GUIDE: See DETECTION_PARAMETERS_GUIDE.md
 // ======================================================================
 
 // =======================[ SENSOR CONFIGURATION ]========================
@@ -21,8 +37,14 @@
 // Sensor Settings
 #define SENSOR_RESOLUTION 64    // 8x8 = 64 zones
 #define SENSOR_GRID_WIDTH 8     // 8x8 grid
-#define RANGING_FREQUENCY_HZ 15 // Sensor ranging frequency
-#define MAX_DISTANCE_MM 2500    // Max range to display
+#define RANGING_FREQUENCY_HZ 30 // Sensor ranging frequency
+                                // 📖 TUNING GUIDE: Data acquisition rate control
+                                //    Higher (20-60Hz) = more data, faster detection, higher power
+                                //    Lower (5-10Hz) = less data, slower detection, lower power
+                                //    15Hz = good balance for safety applications
+                                // 📍 CONFIG GUIDE: See DETECTION_PARAMETERS_GUIDE.md
+
+#define MAX_DISTANCE_MM 2500 // Max range to display
 
 // Timing Configuration
 #define SENSOR_RESET_DELAY_MS 5  // Minimal reset delay
