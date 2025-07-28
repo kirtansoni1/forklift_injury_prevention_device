@@ -26,7 +26,6 @@ bool SensorManager::initializeI2C()
     Wire.setTimeout(I2C_TIMEOUT_MS); // Set I2C timeout for faster recovery
     Wire.setClock(I2C_FREQUENCY_HZ); // Ensure clock speed is set
     delay(10);                       // Brief settling time for stable communication
-    Serial.println("🔌 I2C initialized with 100kHz frequency for stability");
     return true;
 }
 
@@ -86,7 +85,7 @@ void SensorManager::releaseAllFromReset()
 
 bool SensorManager::initializeAllSensors()
 {
-    Serial.println("🚀 Starting optimized sensor initialization...");
+    Serial.println("🚀 Starting sensor initialization...");
     unsigned long startTime = millis();
 
     // Quick reset cycle for all sensors
@@ -110,30 +109,63 @@ bool SensorManager::initializeAllSensors()
             digitalWrite(sensors[i]->resetPin, LOW);
             delay(SENSOR_INIT_DELAY_MS);
 
-            // Initialize sensor with optimized retry
+            // Smart initialization - try target address first, then default
             bool initialized = false;
-            for (int retry = 0; retry < 5 && !initialized; retry++)
-            {
-                // Check individual sensor timeout (5 seconds per sensor)
-                if (millis() - sensorStartTime > 5000)
-                {
-                    Serial.print("❌ Timeout during ");
-                    Serial.print(sensors[i]->name);
-                    Serial.println(" initialization");
-                    return false;
-                }
+            bool addressAlreadySet = false;
 
-                if (sensors[i]->sensor->begin())
+            // First, try to initialize at the target address (in case it was retained from previous session)
+            if (sensors[i]->address != SEN_DEFAULT_I2C_ADDR)
+            {
+                Serial.print("🔍 Checking if ");
+                Serial.print(sensors[i]->name);
+                Serial.print(" is already at target address 0x");
+                Serial.println(sensors[i]->address, HEX);
+
+                if (sensors[i]->sensor->begin(sensors[i]->address))
                 {
                     initialized = true;
+                    addressAlreadySet = true;
+                    Serial.print("✅ Found ");
+                    Serial.print(sensors[i]->name);
+                    Serial.println(" at target address - skipping address change");
                 }
                 else
                 {
-                    Serial.print("⚠️ Retry ");
-                    Serial.print(retry + 1);
-                    Serial.print(" for ");
-                    Serial.println(sensors[i]->name);
-                    delay(SENSOR_INIT_DELAY_MS); // Reduced retry delay
+                    Serial.print("⚠️ ");
+                    Serial.print(sensors[i]->name);
+                    Serial.println(" not found at target address, trying default");
+                }
+            }
+
+            // If not found at target address, try default address with retries
+            if (!initialized)
+            {
+                for (int retry = 0; retry < 5 && !initialized; retry++)
+                {
+                    // Check individual sensor timeout (5 seconds per sensor)
+                    if (millis() - sensorStartTime > 5000)
+                    {
+                        Serial.print("❌ Timeout during ");
+                        Serial.print(sensors[i]->name);
+                        Serial.println(" initialization");
+                        return false;
+                    }
+
+                    if (sensors[i]->sensor->begin()) // Try default address
+                    {
+                        initialized = true;
+                        Serial.print("✅ Found ");
+                        Serial.print(sensors[i]->name);
+                        Serial.println(" at default address");
+                    }
+                    else
+                    {
+                        Serial.print("⚠️ Retry ");
+                        Serial.print(retry + 1);
+                        Serial.print(" for ");
+                        Serial.println(sensors[i]->name);
+                        delay(SENSOR_INIT_DELAY_MS); // Reduced retry delay
+                    }
                 }
             }
 
@@ -145,9 +177,14 @@ bool SensorManager::initializeAllSensors()
                 return false;
             }
 
-            // Change address if needed
-            if (sensors[i]->address != SEN_DEFAULT_I2C_ADDR)
+            // Change address if needed (only if not already at target address)
+            if (sensors[i]->address != SEN_DEFAULT_I2C_ADDR && !addressAlreadySet)
             {
+                Serial.print("🔧 Setting address for ");
+                Serial.print(sensors[i]->name);
+                Serial.print(" to 0x");
+                Serial.println(sensors[i]->address, HEX);
+
                 bool addressSet = false;
                 for (int addrRetry = 0; addrRetry < 3 && !addressSet; addrRetry++)
                 {
@@ -157,6 +194,10 @@ bool SensorManager::initializeAllSensors()
                     }
                     else
                     {
+                        Serial.print("⚠️ Address retry ");
+                        Serial.print(addrRetry + 1);
+                        Serial.print(" for ");
+                        Serial.println(sensors[i]->name);
                         delay(SENSOR_INIT_DELAY_MS);
                     }
                 }
@@ -169,6 +210,11 @@ bool SensorManager::initializeAllSensors()
                 }
                 Serial.print("✅ Address set to 0x");
                 Serial.println(sensors[i]->address, HEX);
+            }
+            else if (addressAlreadySet)
+            {
+                Serial.print("✅ Address already correct for ");
+                Serial.println(sensors[i]->name);
             }
 
             // Quick sensor configuration
