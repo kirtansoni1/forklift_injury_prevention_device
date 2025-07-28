@@ -9,21 +9,27 @@
 #include "defines.h"
 #include "sensor_manager.h"
 
-// === Global Sensor Instances ===
+// =======================[ GLOBAL SENSOR INSTANCES ]===================
 extern SparkFun_VL53L5CX sensorTop;
 extern SparkFun_VL53L5CX sensorLeft;
 extern SparkFun_VL53L5CX sensorRight;
 
-// === Global Data Buffers ===
+// =======================[ GLOBAL DATA BUFFERS ]=======================
 extern VL53L5CX_ResultsData dataTop;
 extern VL53L5CX_ResultsData dataLeft;
 extern VL53L5CX_ResultsData dataRight;
 
-// === Global Configuration Parameters ===
-extern int imageResolution;
-extern int imageWidth;
+// =======================[ GLOBAL SENSOR CONFIGURATIONS ]===============
+extern SensorConfig topSensorConfig;
+extern SensorConfig leftSensorConfig;
+extern SensorConfig rightSensorConfig;
 
-// === Function Prototypes ===
-void printSensorMatrix(const char *label, VL53L5CX_ResultsData &data);
+// =======================[ FUNCTION PROTOTYPES ]========================
+// System initialization
+bool initializeSystem();
+bool setupSensors();
+
+// Main application loop
+void processAllSensors();
 
 #endif // MAIN_H

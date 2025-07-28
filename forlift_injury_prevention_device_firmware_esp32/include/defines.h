@@ -1,35 +1,33 @@
-// =======================[ COM CONFIGURATION ]=========================
+// =======================[ SYSTEM CONFIGURATION ]=========================
 #define SERIAL_BAUD_RATE 115200 // Serial communication speed
+#define LOOP_DELAY_MS 50        // Main loop delay (faster response)
+#define INIT_TIMEOUT_MS 15000   // Initialization timeout (increased)
 // ======================================================================
 
-// =======================[ USER CONFIGURATION ]=========================
-// ESP32-S3 I²C Pin Configuration
-#define I2C_SDA_PIN 4            // GPIO4 as SDA
-#define I2C_SCL_PIN 5            // GPIO5 as SCL
-#define I2C_FREQUENCY_HZ 1000000 // Max supported I2C speed for VL53L5CX
+// =======================[ I2C CONFIGURATION ]===========================
+#define I2C_SDA_PIN 4           // GPIO4 as SDA
+#define I2C_SCL_PIN 5           // GPIO5 as SCL
+#define I2C_FREQUENCY_HZ 100000 // Reduced to 100kHz for stability
+#define I2C_TIMEOUT_MS 50       // Reduced timeout for faster recovery
+// ======================================================================
 
-// Sensor I²C Address
+// =======================[ SENSOR CONFIGURATION ]========================
+// Sensor I²C Addresses
 #define SEN_DEFAULT_I2C_ADDR 0x29
-#define SEN_TOP_I2C_ADDR 0x29
-#define SEN_RIGHT_I2C_ADDR 0x2A
-#define SEN_LEFT_I2C_ADDR 0x2B
+#define SEN_TOP_I2C_ADDR 0x44   // Top sensor address
+#define SEN_LEFT_I2C_ADDR 0x45  // Left sensor address
+#define SEN_RIGHT_I2C_ADDR 0x29 // Right sensor address (keep default)
 
-// Grid resolution: choose 4x4 (16 zones) or 8x8 (64 zones)
-#define GRID_RESOLUTION VL53L5CX_RESOLUTION_8X8
+// Sensor Settings
+#define SENSOR_RESOLUTION 64    // 8x8 = 64 zones
+#define SENSOR_GRID_WIDTH 8     // 8x8 grid
+#define RANGING_FREQUENCY_HZ 15 // Sensor ranging frequency
+#define MAX_DISTANCE_MM 2500    // Max range to display
 
-// Max range to display (for printing only)
-#define MAX_DISTANCE_MM 2500
-
-// Sensor configuration
-#define RANGING_MODE SF_VL53L5CX_RANGING_MODE::AUTONOMOUS
-#define INTEGRATION_TIME_MS 10 // 1–20 ms
-#define SHARPENER_PERCENT 10   // 0–99%
-#define TARGET_ORDER SF_VL53L5CX_TARGET_ORDER::CLOSEST
-#define RANGING_FREQUENCY_HZ 15 // Max 15 Hz
-
-// Control flags
-#define ENABLE_START_RANGING true
-#define ENABLE_STOP_AFTER_ONE false
+// Timing Configuration
+#define SENSOR_RESET_DELAY_MS 5  // Minimal reset delay
+#define SENSOR_INIT_DELAY_MS 10  // Minimal initialization delay
+#define SENSOR_CONFIG_DELAY_MS 2 // Minimal configuration delay
 // ======================================================================
 
 // =======================[ PIN ASSIGNMENTS ]============================
